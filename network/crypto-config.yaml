@@ -8,7 +8,7 @@
 # ---------------------------------------------------------------------------
 OrdererOrgs:
   - Name: Orderer
-    Domain: example.com
+    Domain: meatchain.cloud
     EnableNodeOUs: true
 
     Specs:
@@ -18,36 +18,27 @@ OrdererOrgs:
       - Hostname: orderer2
         SANS:
           - 127.0.0.1
-      - Hostname: orderer3
-        SANS:
-          - 127.0.0.1
-      - Hostname: orderer4
-        SANS:
-          - 127.0.0.1
-      - Hostname: orderer5
-        SANS:
-          - 127.0.0.1
 
 # ---------------------------------------------------------------------------
 # "PeerOrgs" - Definition of organizations managing peer nodes
 # ---------------------------------------------------------------------------
 PeerOrgs:
-  - Name: Org1
-    Domain: org1.example.com
+  - Name: Farm
+    Domain: farm.meatchain.cloud
     EnableNodeOUs: true
 
     Template:
-      Count: 2
+      Count: 1
       SANS:
         - 127.0.0.1
     Users:
       Count: 1
 
-  - Name: Org2
-    Domain: org2.example.com
+  - Name: Factory
+    Domain: factory.meatchain.cloud
     EnableNodeOUs: true
     Template:
-      Count: 2
+      Count: 1
       SANS:
         - 127.0.0.1
     Users:

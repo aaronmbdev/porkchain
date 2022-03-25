@@ -25,7 +25,7 @@ Organizations:
         ID: OrdererMSP
 
         # MSPDir is the filesystem path which contains the MSP configuration
-        MSPDir: crypto-config/ordererOrganizations/example.com/msp
+        MSPDir: crypto-config/ordererOrganizations/meatchain.cloud/msp
 
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
@@ -44,17 +44,16 @@ Organizations:
         OrdererEndpoints:
             - 127.0.0.1:6050
             - 127.0.0.1:6051
-            - 127.0.0.1:6052
 
-    - &Org1
+    - &Farm
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: Org1MSP
+        Name: FarmMSP
 
         # ID to load the MSP definition as
-        ID: Org1MSP
+        ID: FarmMSP
 
-        MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
+        MSPDir: crypto-config/peerOrganizations/farm.meatchain.cloud/msp
 
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
@@ -62,16 +61,16 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')"
+                Rule: "OR('FarmMSP.admin', 'FarmMSP.peer', 'FarmMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('Org1MSP.admin', 'Org1MSP.client')"
+                Rule: "OR('FarmMSP.admin', 'FarmMSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('Org1MSP.admin')"
+                Rule: "OR('FarmMSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('Org1MSP.peer')"
+                Rule: "OR('FarmMSP.peer')"
 
         # leave this flag set to true.
         AnchorPeers:
@@ -81,15 +80,15 @@ Organizations:
             - Host: 127.0.0.1
               Port: 7051
 
-    - &Org2
+    - &Factory
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: Org2MSP
+        Name: FactoryMSP
 
         # ID to load the MSP definition as
-        ID: Org2MSP
+        ID: FactoryMSP
 
-        MSPDir: crypto-config/peerOrganizations/org2.example.com/msp
+        MSPDir: crypto-config/peerOrganizations/factory.meatchain.cloud/msp
 
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
@@ -97,16 +96,16 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('Org2MSP.admin', 'Org2MSP.peer', 'Org2MSP.client')"
+                Rule: "OR('FactoryMSP.admin', 'FactoryMSP.peer', 'FactoryMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('Org2MSP.admin', 'Org2MSP.client')"
+                Rule: "OR('FactoryMSP.admin', 'FactoryMSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('Org2MSP.admin')"
+                Rule: "OR('FactoryMSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('Org2MSP.peer')"
+                Rule: "OR('FactoryMSP.peer')"
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
@@ -200,10 +199,10 @@ Application: &ApplicationDefaults
             Rule: "MAJORITY Admins"
         LifecycleEndorsement:
                 Type: Signature
-                Rule: "OR('Org1MSP.peer','Org2MSP.peer')"
+                Rule: "OR('FarmMSP.peer','FactoryMSP.peer')"
         Endorsement:
                 Type: Signature
-                Rule: "OR('Org1MSP.peer','Org2MSP.peer')"
+                Rule: "OR('FarmMSP.peer','FactoryMSP.peer')"
 
     Capabilities:
         <<: *ApplicationCapabilities
@@ -224,16 +223,12 @@ Orderer: &OrdererDefaults
         Consenters:
         - Host: 127.0.0.1
           Port: 6050
-          ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
-          ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+          ClientTLSCert: crypto-config/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/tls/server.crt
+          ServerTLSCert: crypto-config/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/tls/server.crt
         - Host: 127.0.0.1
           Port: 6051
-          ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt
-          ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt
-        - Host: 127.0.0.1
-          Port: 6052
-          ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt
-          ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt
+          ClientTLSCert: crypto-config/ordererOrganizations/meatchain.cloud/orderers/orderer2.meatchain.cloud/tls/server.crt
+          ServerTLSCert: crypto-config/ordererOrganizations/meatchain.cloud/orderers/orderer2.meatchain.cloud/tls/server.crt
 
         # Options to be specified for all the etcd/raft nodes. The values here
         # are the defaults for all new channels and can be modified on a
@@ -355,35 +350,35 @@ Profiles:
             Capabilities:
                 <<: *OrdererCapabilities
         Consortiums:
-            SampleConsortium:
+            meatConsortium:
                 Organizations:
-                    - *Org1
-                    - *Org2
+                    - *Farm
+                    - *Factory
     TwoOrgsChannel:
-        Consortium: SampleConsortium
+        Consortium: meatConsortium
         <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Org1
-                - *Org2
+                - *Farm
+                - *Factory
             Capabilities:
                 <<: *ApplicationCapabilities
     Org1Channel:
-        Consortium: SampleConsortium
+        Consortium: meatConsortium
         <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Org1
+                - *Farm
             Capabilities:
                 <<: *ApplicationCapabilities
     Org2Channel:
-        Consortium: SampleConsortium
+        Consortium: meatConsortium
         <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Org2
+                - *Factory
             Capabilities:
                 <<: *ApplicationCapabilities

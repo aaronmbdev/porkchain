@@ -8,12 +8,12 @@ export FABRIC_CFG_PATH="${PWD}"/../config
 export FABRIC_LOGGING_SPEC=debug:cauthdsl,policies,msp,common.configtx,common.channelconfig=info
 export ORDERER_GENERAL_LISTENPORT=6050
 export ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-export ORDERER_GENERAL_LOCALMSPDIR="${PWD}"/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp
+export ORDERER_GENERAL_LOCALMSPDIR="${PWD}"/crypto-config/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/msp
 export ORDERER_GENERAL_TLS_ENABLED=true
-export ORDERER_GENERAL_TLS_PRIVATEKEY="${PWD}"/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.key
-export ORDERER_GENERAL_TLS_CERTIFICATE="${PWD}"/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+export ORDERER_GENERAL_TLS_PRIVATEKEY="${PWD}"/crypto-config/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/tls/server.key
+export ORDERER_GENERAL_TLS_CERTIFICATE="${PWD}"/crypto-config/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/tls/server.crt
 # following setting is not really needed at runtime since channel config has ca root certs, but we need to override the default in orderer.yaml
-export ORDERER_GENERAL_TLS_ROOTCAS="${PWD}"/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt
+export ORDERER_GENERAL_TLS_ROOTCAS="${PWD}"/crypto-config/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/tls/ca.crt
 export ORDERER_GENERAL_BOOTSTRAPMETHOD=file
 export ORDERER_GENERAL_BOOTSTRAPFILE="${PWD}"/channel-artifacts/genesis.block
 export ORDERER_FILELEDGER_LOCATION="${PWD}"/data/orderer

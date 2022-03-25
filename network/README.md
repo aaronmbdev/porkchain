@@ -1,35 +1,30 @@
-# Test network - Nano bash
+# MealChain - Network setup
 
-Test network Nano bash provides a set of minimal bash scripts to run a Fabric network on your local machine.
-The network is functionally equivalent to the docker-based Test Network, you can therefore run all the tutorials and samples that target the Test Network with minimal changes.
-The Fabric release binaries are utilized rather than using docker containers to avoid all unnecessary layers. Only the chaincode and chaincode builder runs in a docker container behind the scenes.
-Using the Fabric binaries also makes it simple for Fabric developers to iteratively and quickly modify Fabric code and test a Fabric network as a user.
+This set of scripts are used to run the network required by the MealChain applications. 
 
-As the name `nano` implies, the scripts provide the smallest minimal setup possible for a Fabric network while still offering a multi-node TLS-enabled network:
-- Minimal set of dependencies
-- Minimal requirements on Fabric version (any v2.x orderer and peer nodes should work)
-- Minimal set of environment variable overrides of the default orderer orderer.yaml and peer core.yaml configurations
-- Minimal scripting with minimal set of reference commands to get a Fabric network up and running
-- Minimal channel configuration for an orderer organization (3 ordering nodes) and two peer organizations (with two peers each)
-- Minimal endorsement policy to allow a single organization to approve and commit a chaincode (unlike Test Network which requires both organizations to endorse)
+# Prerequisites
 
-# Prereqs
+- Hyperledger Fabric prerequisites [Available here](https://hyperledger-fabric.readthedocs.io/en/latest/prereqs.html)
+- Hyperledger 2.X installed on the System. [Downloading the Fabric binaries](https://hyperledger-fabric.readthedocs.io/en/latest/install.html). 
 
-- Follow the Fabric documentation for the [Prereqs](https://hyperledger-fabric.readthedocs.io/en/latest/prereqs.html)
-- Follow the Fabric documentation for [downloading the Fabric samples and binaries](https://hyperledger-fabric.readthedocs.io/en/latest/install.html). You can skip the docker image downloads by using `curl -sSL https://bit.ly/2ysbOFE | bash -s -- -d`
+Once the binaries are downloaded, make sure they're located at the bin folder of this repo. They won't be uploaded to the repository.
 
 # Instructions for starting network
 
+The first step to launch the network is to generate the required artifacts. 
+
+I will run `./generate_artifacts.sh` to generate the required crypto material (Genesis block and configuration).
+
 Open terminal windows for 3 ordering nodes, 4 peer nodes, and 4 peer admins as seen in the following terminal setup. The first two peers and peer admins belong to Org1, the latter two peer and peer admins belong to Org2.
 Note, you can start with two ordering nodes and a single Org1 peer node and single Org1 peer admin terminal if you would like to keep things even more minimal (two ordering nodes are required to achieve consensus (2 of 3), while a single peer from Org1 can be utilized since the endorsement policy is set as any single organization).
+
 ![Terminal setup](terminal_setup.png)
 
 The following instructions will have you run simple bash scripts that set environment variable overrides for a component and then runs the component.
 The scripts contain only simple single-line commands so that they are easy to read and understand.
 If you have trouble running bash scripts in your environment, you can just as easily copy and paste the individual commands from the script files instead of running the script files.
 
-- cd to the `test-network-nano-bash` directory in each terminal window
-- In the first orderer terminal, run `./generate_artifacts.sh` to generate crypto material (calls cryptogen) and system and application channel genesis block and configuration transactions (calls configtxgen). The artifacts will be created in the `crypto-config` and `channel-artifacts` directories.
+
 - In the three orderer terminals, run `./orderer1.sh`, `./orderer2.sh`, `./orderer3.sh` respectively
 - In the four peer terminals, run `./peer1.sh`, `./peer2.sh`, `./peer3.sh`, `./peer4.sh` respectively
 - Note that each orderer and peer write their data (including their ledgers) to their own subdirectory under the `data` directory
