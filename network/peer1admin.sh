@@ -12,8 +12,8 @@ export CORE_PEER_LOCALMSPID=FarmMSP
 export CORE_PEER_MSPCONFIGPATH="${PWD}"/crypto-config/peerOrganizations/farm.meatchain.cloud/users/Admin@farm.meatchain.cloud/msp
 
 # peer1 admin will be responsible for creating channel and adding anchor peer
-peer channel create -c mychannel -o 127.0.0.1:6050 -f "${PWD}"/channel-artifacts/mychannel.tx --outputBlock "${PWD}"/channel-artifacts/mychannel.block  --tls --cafile "${PWD}"/crypto-config/ordererOrganizations/example.com/orderers/orderer.meatchain.cloud/tls/ca.crt
-peer channel update -o 127.0.0.1:6050 -c mychannel -f "${PWD}"/channel-artifacts/FarmMSPanchors.tx --tls --cafile "${PWD}"/crypto-config/ordererOrganizations/example.com/orderers/orderer.meatchain.cloud/tls/ca.crt
+peer channel create -c mychannel -o 127.0.0.1:6050 -f "${PWD}"/channel-artifacts/mychannel.tx --outputBlock "${PWD}"/channel-artifacts/mychannel.block  --tls --cafile "${PWD}"/crypto-config/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/tls/ca.crt
+peer channel update -o 127.0.0.1:6050 -c mychannel -f "${PWD}"/channel-artifacts/FarmMSPanchors.tx --tls --cafile "${PWD}"/crypto-config/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/tls/ca.crt
 
 # join peer to channel
 peer channel join -b "${PWD}"/channel-artifacts/mychannel.block

@@ -6,10 +6,10 @@ export FABRIC_CFG_PATH="${PWD}"/../config
 
 export FABRIC_LOGGING_SPEC=INFO
 export CORE_PEER_TLS_ENABLED=true
-export CORE_PEER_TLS_ROOTCERT_FILE="${PWD}"/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt
+export CORE_PEER_TLS_ROOTCERT_FILE="${PWD}"/crypto-config/peerOrganizations/factory.meatchain.cloud/peers/peer0.factory.meatchain.cloud/tls/ca.crt
 export CORE_PEER_ADDRESS=127.0.0.1:7053
-export CORE_PEER_LOCALMSPID=Org1MSP
-export CORE_PEER_MSPCONFIGPATH="${PWD}"/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+export CORE_PEER_LOCALMSPID=FactoryMSP
+export CORE_PEER_MSPCONFIGPATH="${PWD}"/crypto-config/peerOrganizations/factory.meatchain.cloud/users/Admin@factory.meatchain.cloud/msp
 
 # join peer to channel
 peer channel join -b "${PWD}"/channel-artifacts/mychannel.block

@@ -13,26 +13,12 @@ Once the binaries are downloaded, make sure they're located at the bin folder of
 
 The first step to launch the network is to generate the required artifacts. 
 
-I will run `./generate_artifacts.sh` to generate the required crypto material (Genesis block and configuration).
+I will run `./generate_artifacts.sh` to generate the required crypto material (Genesis block and configuration). This will be used for each node.
 
-Open terminal windows for 3 ordering nodes, 4 peer nodes, and 4 peer admins as seen in the following terminal setup. The first two peers and peer admins belong to Org1, the latter two peer and peer admins belong to Org2.
-Note, you can start with two ordering nodes and a single Org1 peer node and single Org1 peer admin terminal if you would like to keep things even more minimal (two ordering nodes are required to achieve consensus (2 of 3), while a single peer from Org1 can be utilized since the endorsement policy is set as any single organization).
+- In different terminals, run `./orderer1.sh`, `./orderer2.sh` respectively. This will start the ordering service. 
+- Then, run `./peer1.sh`, `./peer2.sh` to start the network peers.
 
-![Terminal setup](terminal_setup.png)
-
-The following instructions will have you run simple bash scripts that set environment variable overrides for a component and then runs the component.
-The scripts contain only simple single-line commands so that they are easy to read and understand.
-If you have trouble running bash scripts in your environment, you can just as easily copy and paste the individual commands from the script files instead of running the script files.
-
-
-- In the three orderer terminals, run `./orderer1.sh`, `./orderer2.sh`, `./orderer3.sh` respectively
-- In the four peer terminals, run `./peer1.sh`, `./peer2.sh`, `./peer3.sh`, `./peer4.sh` respectively
-- Note that each orderer and peer write their data (including their ledgers) to their own subdirectory under the `data` directory
-- In the four peer admin terminals, run `source peer1admin.sh`, `source peer2admin.sh`, `source peer3admin.sh`, `source peer4admin.sh` respectively
-
-Note the syntax of running the scripts. The peer admin scripts run with the `source` command in order to source the script files in the respective shells. This is important so that the exported environment variables can be utilized by any subsequent user commands.
-
-The `peer1admin.sh` script sets the peer1 admin environment variables, creates the application channel `mychannel`, updates the channel configuration for the org1 gossip anchor peer, and joins peer1 to `mychannel`.
+The `peer1admin.sh` script sets the peer1 admin environment variables, creates the application channel `mychannel`, updates the channel configuration for the farm gossip anchor peer, and joins peer1 to `mychannel`.
 The remaining peer admin scripts join their respective peers to `mychannel`.
 
 # Instructions for deploying and running the basic asset transfer sample chaincode
