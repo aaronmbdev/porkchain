@@ -1,5 +1,5 @@
 {
-	"name": "test-network",
+	"name": "meatchain",
 	"version": "1.0.0",
 	"client": {
 		"tlsEnable": true,
@@ -8,7 +8,7 @@
 			"password": "exploreradminpw"
 		},
 		"enableAuthentication": true,
-		"organization": "Org1MSP",
+		"organization": "FarmMSP",
 		"connection": {
 			"timeout": {
 				"peer": {
@@ -21,28 +21,28 @@
 	"channels": {
 		"mychannel": {
 			"peers": {
-				"peer0.org1.example.com": {}
+				"peer0.farm.meatchain.cloud": {}
 			}
 		}
 	},
 	"organizations": {
-		"Org1MSP": {
-			"mspid": "Org1MSP",
+		"FarmMSP": {
+			"mspid": "FarmMSP",
 			"adminPrivateKey": {
-				"path": "/tmp/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv_sk"
+				"path": "/tmp/crypto/peerOrganizations/farm.meatchain.cloud/users/User1@farm.meatchain.cloud/msp/keystore/priv_sk"
 			},
-			"peers": ["peer0.org1.example.com"],
+			"peers": ["peer0.farm.meatchain.cloud"],
 			"signedCert": {
-				"path": "/tmp/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem"
+				"path": "/tmp/crypto/peerOrganizations/farm.meatchain.cloud/users/User1@farm.meatchain.cloud/msp/signcerts/User1@farm.meatchain.cloud-cert.pem"
 			}
 		}
 	},
 	"peers": {
-		"peer0.org1.example.com": {
+		"peer0.farm.meatchain.cloud": {
 			"tlsCACerts": {
-				"path": "/tmp/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+				"path": "/tmp/crypto/peerOrganizations/farm.meatchain.cloud/peers/peer0.farm.meatchain.cloud/tls/ca.crt"
 			},
-			"url": "grpcs://peer0.org1.example.com:7051"
+			"url": "grpcs://peer0.farm.meatchain.cloud:7051"
 		}
 	}
 }

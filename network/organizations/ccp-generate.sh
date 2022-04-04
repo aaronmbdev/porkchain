@@ -26,20 +26,20 @@ function yaml_ccp {
         organizations/ccp-template.yaml | sed -e $'s/\\\\n/\\\n          /g'
 }
 
-ORG=1
+ORG=Farm
 P0PORT=7051
 CAPORT=7054
-PEERPEM=organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
-CAPEM=organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+PEERPEM=organizations/peerOrganizations/farm.meatchain.cloud/tlsca/tlsca.farm.meatchain.cloud-cert.pem
+CAPEM=organizations/peerOrganizations/farm.meatchain.cloud/ca/ca.farm.meatchain.cloud-cert.pem
 
-echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/org1.example.com/connection-org1.json
-echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/org1.example.com/connection-org1.yaml
+echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/farm.meatchain.cloud/connection-farm.json
+echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/farm.meatchain.cloud/connection-farm.yaml
 
-ORG=2
+ORG=Factory
 P0PORT=9051
 CAPORT=8054
-PEERPEM=organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
-CAPEM=organizations/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem
+PEERPEM=organizations/peerOrganizations/factory.meatchain.cloud/tlsca/tlsca.factory.meatchain.cloud-cert.pem
+CAPEM=organizations/peerOrganizations/factory.meatchain.cloud/ca/ca.factory.meatchain.cloud-cert.pem
 
-echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/org2.example.com/connection-org2.json
-echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/org2.example.com/connection-org2.yaml
+echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/factory.meatchain.cloud/connection-factory.json
+echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/factory.meatchain.cloud/connection-factory.yaml

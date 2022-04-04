@@ -95,7 +95,7 @@ function createOrgs() {
         fatalln "Failed to generate certificates..."
     fi
 
-    infoln "Creating Org2 Identities"
+    infoln "Creating Factory Identities"
 
     set -x
     cryptogen generate --config=./organizations/cryptogen/crypto-config-org2.yaml --output="organizations"
@@ -105,7 +105,7 @@ function createOrgs() {
         fatalln "Failed to generate certificates..."
     fi
 
-    infoln "Creating Orderer Org Identities"
+    infoln "Creating Orderer Identities"
 
     set -x
     cryptogen generate --config=./organizations/cryptogen/crypto-config-orderer.yaml --output="organizations"
@@ -116,7 +116,7 @@ function createOrgs() {
     fi
 
 
-  infoln "Generating CCP files for Org1 and Org2"
+  infoln "Generating CCP files for Farm and Factory"
   ./organizations/ccp-generate.sh
 }
 
@@ -190,8 +190,6 @@ function networkDown() {
 
   if [ "${CONTAINER_CLI}" == "docker" ]; then
     DOCKER_SOCK=$DOCKER_SOCK ${CONTAINER_CLI_COMPOSE} ${COMPOSE_FILES} down --volumes --remove-orphans
-  elif [ "${CONTAINER_CLI}" == "podman" ]; then
-    ${CONTAINER_CLI_COMPOSE} ${COMPOSE_FILES} down --volumes
   else
     fatalln "Container CLI  ${CONTAINER_CLI} not supported"
   fi
@@ -200,7 +198,7 @@ function networkDown() {
   # Don't remove the generated artifacts -- note, the ledgers are always removed
   if [ "$MODE" != "restart" ]; then
     # Bring down the network, deleting the volumes
-    ${CONTAINER_CLI} volume rm docker_orderer.example.com docker_peer0.org1.example.com docker_peer0.org2.example.com
+    ${CONTAINER_CLI} volume rm docker_orderer.meatchain.cloud docker_peer0.farm.meatchain.cloud docker_peer0.factory.meatchain.cloud
     #Cleanup the chaincode containers
     clearContainers
     #Cleanup images
