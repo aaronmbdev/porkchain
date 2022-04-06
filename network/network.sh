@@ -22,6 +22,7 @@ function clearContainers() {
   infoln "Removing remaining containers"
   ${CONTAINER_CLI} rm -f $(${CONTAINER_CLI} ps -aq --filter label=service=hyperledger-fabric) 2>/dev/null || true
   ${CONTAINER_CLI} rm -f $(${CONTAINER_CLI} ps -aq --filter name='dev-peer*') 2>/dev/null || true
+  ${CONTAINER_CLI} volume prune 2>/dev/null || true
 }
 
 # Delete any images that were generated as a part of this setup
@@ -197,8 +198,6 @@ function networkDown() {
 
   # Don't remove the generated artifacts -- note, the ledgers are always removed
   if [ "$MODE" != "restart" ]; then
-    # Bring down the network, deleting the volumes
-    ${CONTAINER_CLI} volume rm docker_orderer.meatchain.cloud docker_peer0.farm.meatchain.cloud docker_peer0.factory.meatchain.cloud
     #Cleanup the chaincode containers
     clearContainers
     #Cleanup images

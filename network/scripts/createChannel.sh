@@ -26,11 +26,22 @@ createChannelGenesisBlock() {
 	if [ "$?" -ne 0 ]; then
 		fatalln "configtxgen tool not found."
 	fi
+	local output_block=./channel-artifacts/${CHANNEL_NAME}.block
+	if test -f "$output_block"; then
+		infoln "Genesis block already exists, skipping creation"
+	else 
+		set -x
+		configtxgen -profile TwoOrgsApplicationGenesis -outputBlock ./channel-artifacts/${CHANNEL_NAME}.block -channelID $CHANNEL_NAME
+		res=$?
+		{ set +x; } 2>/dev/null
+	verifyResult $res "Failed to generate channel genesis block..."
+
 	set -x
-	configtxgen -profile TwoOrgsApplicationGenesis -outputBlock ./channel-artifacts/${CHANNEL_NAME}.block -channelID $CHANNEL_NAME
-	res=$?
-	{ set +x; } 2>/dev/null
-  verifyResult $res "Failed to generate channel configuration transaction..."
+		configtxgen -profile TwoOrgsChannel -channelID ${CHANNEL_NAME} -outputCreateChannelTx channel-artifacts/${CHANNEL_NAME}.tx
+		res=$?
+		{ set +x; } 2>/dev/null
+	verifyResult $res "Failed to generate channel configuration transaction..."
+	fi
 }
 
 createChannel() {
@@ -40,8 +51,6 @@ createChannel() {
 	local COUNTER=1
 	local output_block=./channel-artifacts/${CHANNEL_NAME}.block
 	if test -f "$output_block"; then
-		infoln "Channel already exists, skipping creation"
-	else 
 		while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
 			sleep $DELAY
 			set -x
@@ -51,9 +60,22 @@ createChannel() {
 			let rc=$res
 			COUNTER=$(expr $COUNTER + 1)
 		done
-		cat log.txt
 		verifyResult $res "Channel creation failed"
 		successln "Channel '$CHANNEL_NAME' created"
+	fi
+}
+
+createAnchorUpdate() {
+	setGlobals $1
+	local ORG=$2
+	local output_block=./channel-artifacts/${CHANNEL_NAME}.tx
+	if test -f "$output_block"; then
+		set -x
+			configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate channel-artifacts/${ORG}MSPanchors.tx -channelID $CHANNEL_NAME -asOrg ${ORG}MSP
+			res=$?
+			{ set +x; } 2>/dev/null
+		verifyResult $res "Failed to generate $ORG anchor peer update..."
+		
 	fi
 }
 
@@ -85,7 +107,17 @@ joinChannel() {
 
 setAnchorPeer() {
   ORG=$1
-  ${CONTAINER_CLI} exec cli ./scripts/setAnchorPeer.sh $ORG $CHANNEL_NAME 
+  CHANNEL_NAME=$2
+  setGlobals $ORG
+  peer channel fetch config ./channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.meatchain.cloud -c $CHANNEL_NAME --tls --cafile "$ORDERER_CA" >&log.txt
+  configtxlator proto_decode --input ./channel-artifacts/config_block.pb --type common.Block --output ./channel-artifacts/config_block.json
+  jq '.data.data[0].payload.data.config' ./channel-artifacts/config_block.json > ./channel-artifacts/config.json
+  jq '.channel_group.groups.Application.groups.FarmMSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org1.example.com","port": 7051}]},"version": "0"}}' config_copy.json > modified_config.json
+  res=$?
+  cat log.txt
+  verifyResult $res "Anchor peer update failed for org '$CORE_PEER_LOCALMSPID' on channel '$CHANNEL_NAME'"
+  successln "Anchor peer set for org '$CORE_PEER_LOCALMSPID' on channel '$CHANNEL_NAME'"
+
 }
 
 FABRIC_CFG_PATH=${PWD}/configtx
@@ -93,6 +125,7 @@ FABRIC_CFG_PATH=${PWD}/configtx
 ## Create channel genesis block
 infoln "Generating channel genesis block '${CHANNEL_NAME}.block'"
 createChannelGenesisBlock
+#createAnchorUpdate 1 Farm
 
 FABRIC_CFG_PATH=$PWD/../config/
 BLOCKFILE="./channel-artifacts/${CHANNEL_NAME}.block"
@@ -106,11 +139,5 @@ infoln "Joining org1 peer to the channel..."
 joinChannel 1
 infoln "Joining org2 peer to the channel..."
 joinChannel 2
-
-## Set the anchor peers for each org in the channel
-infoln "Setting anchor peer for org1..."
-setAnchorPeer 1
-infoln "Setting anchor peer for org2..."
-setAnchorPeer 2
 
 successln "Channel '$CHANNEL_NAME' joined"

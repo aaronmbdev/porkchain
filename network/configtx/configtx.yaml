@@ -71,6 +71,13 @@ Organizations:
                 Type: Signature
                 Rule: "OR('FarmMSP.peer')"
 
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: localhost
+              Port: 7051
+
     - &Org2
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
@@ -97,6 +104,13 @@ Organizations:
             Endorsement:
                 Type: Signature
                 Rule: "OR('FactoryMSP.peer')"
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: localhost
+              Port: 9051
 
 ################################################################################
 #
@@ -313,3 +327,13 @@ Profiles:
                 - *Org1
                 - *Org2
             Capabilities: *ApplicationCapabilities
+    TwoOrgsChannel:
+        Consortium: Consortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1
+                - *Org2
+            Capabilities:
+                <<: *ApplicationCapabilities

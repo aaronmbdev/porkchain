@@ -11,7 +11,7 @@
 . scripts/utils.sh
 
 export CORE_PEER_TLS_ENABLED=true
-export ORDERER_CA=${PWD}/organizations/ordererOrganizations/meatchain.cloud/tlsca/tlsca.meatchain.cloud-cert.pem
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/meatchain.cloud/tlsca/tlsca.meatchain.cloud-cert.pem 
 export PEER0_ORG1_CA=${PWD}/organizations/peerOrganizations/farm.meatchain.cloud/tlsca/tlsca.farm.meatchain.cloud-cert.pem
 export PEER0_ORG2_CA=${PWD}/organizations/peerOrganizations/factory.meatchain.cloud/tlsca/tlsca.factory.meatchain.cloud-cert.pem
 export PEER0_ORG3_CA=${PWD}/organizations/peerOrganizations/org3.meatchain.cloud/tlsca/tlsca.org3.meatchain.cloud-cert.pem
