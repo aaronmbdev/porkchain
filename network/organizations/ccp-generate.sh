@@ -43,3 +43,13 @@ CAPEM=organizations/peerOrganizations/factory.meatchain.cloud/ca/ca.factory.meat
 
 echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/factory.meatchain.cloud/connection-factory.json
 echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/factory.meatchain.cloud/connection-factory.yaml
+
+
+ORG=Market
+P0PORT=4051
+CAPORT=9054
+PEERPEM=organizations/peerOrganizations/market.meatchain.cloud/tlsca/tlsca.market.meatchain.cloud-cert.pem
+CAPEM=organizations/peerOrganizations/market.meatchain.cloud/ca/ca.market.meatchain.cloud-cert.pem
+
+echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/market.meatchain.cloud/connection-market.json
+echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/market.meatchain.cloud/connection-market.yaml

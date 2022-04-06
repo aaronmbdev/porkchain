@@ -14,7 +14,7 @@ export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/meatchain.cloud/tlsca/tlsca.meatchain.cloud-cert.pem 
 export PEER0_ORG1_CA=${PWD}/organizations/peerOrganizations/farm.meatchain.cloud/tlsca/tlsca.farm.meatchain.cloud-cert.pem
 export PEER0_ORG2_CA=${PWD}/organizations/peerOrganizations/factory.meatchain.cloud/tlsca/tlsca.factory.meatchain.cloud-cert.pem
-export PEER0_ORG3_CA=${PWD}/organizations/peerOrganizations/org3.meatchain.cloud/tlsca/tlsca.org3.meatchain.cloud-cert.pem
+export PEER0_ORG3_CA=${PWD}/organizations/peerOrganizations/market.meatchain.cloud/tlsca/tlsca.market.meatchain.cloud-cert.pem
 export ORDERER_ADMIN_TLS_SIGN_CERT=${PWD}/organizations/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/tls/server.crt
 export ORDERER_ADMIN_TLS_PRIVATE_KEY=${PWD}/organizations/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/tls/server.key
 
@@ -39,10 +39,10 @@ setGlobals() {
     export CORE_PEER_ADDRESS=localhost:9051
 
   elif [ $USING_ORG -eq 3 ]; then
-    export CORE_PEER_LOCALMSPID="Org3MSP"
+    export CORE_PEER_LOCALMSPID="MarketMSP"
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG3_CA
-    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org3.meatchain.cloud/users/Admin@org3.meatchain.cloud/msp
-    export CORE_PEER_ADDRESS=localhost:11051
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/market.meatchain.cloud/users/Admin@market.meatchain.cloud/msp
+    export CORE_PEER_ADDRESS=localhost:4051
   else
     errorln "ORG Unknown"
   fi
@@ -67,7 +67,7 @@ setGlobalsCLI() {
   elif [ $USING_ORG -eq 2 ]; then
     export CORE_PEER_ADDRESS=peer0.factory.meatchain.cloud:9051
   elif [ $USING_ORG -eq 3 ]; then
-    export CORE_PEER_ADDRESS=peer0.org3.meatchain.cloud:11051
+    export CORE_PEER_ADDRESS=peer0.market.meatchain.cloud:4051
   else
     errorln "ORG Unknown"
   fi

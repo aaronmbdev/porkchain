@@ -19,7 +19,7 @@
 		}
 	},
 	"channels": {
-		"mychannel": {
+		"meatchannel": {
 			"peers": {
 				"peer0.farm.meatchain.cloud": {}
 			}

@@ -9,6 +9,7 @@ volumes:
   orderer.meatchain.cloud:
   peer0.farm.meatchain.cloud:
   peer0.factory.meatchain.cloud:
+  peer0.market.meatchain.cloud:
 
 networks:
   test:
@@ -133,6 +134,45 @@ services:
     ports:
       - 9051:9051
       - 9445:9445
+    networks:
+      - test
+
+  peer0.market.meatchain.cloud:
+    container_name: peer0.market.meatchain.cloud
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer0.market.meatchain.cloud
+      - CORE_PEER_ADDRESS=peer0.market.meatchain.cloud:4051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:4051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.market.meatchain.cloud:4052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:4052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.market.meatchain.cloud:4051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.market.meatchain.cloud:4051
+      - CORE_PEER_LOCALMSPID=MarketMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp      
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.market.meatchain.cloud:9446
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0market"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+    volumes:
+        - ../organizations/peerOrganizations/market.meatchain.cloud/peers/peer0.market.meatchain.cloud:/etc/hyperledger/fabric
+        - peer0.market.meatchain.cloud:/var/hyperledger/production
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 4051:4051
+      - 9446:9446
     networks:
       - test
 

@@ -65,19 +65,6 @@ createChannel() {
 	fi
 }
 
-createAnchorUpdate() {
-	setGlobals $1
-	local ORG=$2
-	local output_block=./channel-artifacts/${CHANNEL_NAME}.tx
-	if test -f "$output_block"; then
-		set -x
-			configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate channel-artifacts/${ORG}MSPanchors.tx -channelID $CHANNEL_NAME -asOrg ${ORG}MSP
-			res=$?
-			{ set +x; } 2>/dev/null
-		verifyResult $res "Failed to generate $ORG anchor peer update..."
-		
-	fi
-}
 
 # joinChannel ORG
 joinChannel() {
@@ -105,27 +92,11 @@ joinChannel() {
 	fi
 }
 
-setAnchorPeer() {
-  ORG=$1
-  CHANNEL_NAME=$2
-  setGlobals $ORG
-  peer channel fetch config ./channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.meatchain.cloud -c $CHANNEL_NAME --tls --cafile "$ORDERER_CA" >&log.txt
-  configtxlator proto_decode --input ./channel-artifacts/config_block.pb --type common.Block --output ./channel-artifacts/config_block.json
-  jq '.data.data[0].payload.data.config' ./channel-artifacts/config_block.json > ./channel-artifacts/config.json
-  jq '.channel_group.groups.Application.groups.Org1MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org1.example.com","port": 7051}]},"version": "0"}}' config_copy.json > modified_config.json
-  res=$?
-  cat log.txt
-  verifyResult $res "Anchor peer update failed for org '$CORE_PEER_LOCALMSPID' on channel '$CHANNEL_NAME'"
-  successln "Anchor peer set for org '$CORE_PEER_LOCALMSPID' on channel '$CHANNEL_NAME'"
-
-}
-
 FABRIC_CFG_PATH=${PWD}/configtx
 
 ## Create channel genesis block
 infoln "Generating channel genesis block '${CHANNEL_NAME}.block'"
 createChannelGenesisBlock
-#createAnchorUpdate 1 Farm
 
 FABRIC_CFG_PATH=$PWD/../config/
 BLOCKFILE="./channel-artifacts/${CHANNEL_NAME}.block"
@@ -139,11 +110,7 @@ infoln "Joining org1 peer to the channel..."
 joinChannel 1
 infoln "Joining org2 peer to the channel..."
 joinChannel 2
-
-## Set the anchor peers for each org in the channel
-infoln "Setting anchor peer for org1..."
-#setAnchorPeer 1 ${CHANNEL_NAME}
-infoln "Setting anchor peer for org2..."
-#setAnchorPeer 2 ${CHANNEL_NAME}
+infoln "Joining org3 peer to the channel..."
+joinChannel 3
 
 successln "Channel '$CHANNEL_NAME' joined"
