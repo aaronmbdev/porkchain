@@ -75,7 +75,7 @@ Organizations:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: localhost
+            - Host: peer0.farm.meatchain.cloud
               Port: 7051
 
     - &Org2
@@ -109,7 +109,7 @@ Organizations:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: localhost
+            - Host: peer0.factory.meatchain.cloud
               Port: 9051
 
 ################################################################################
