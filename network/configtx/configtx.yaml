@@ -43,6 +43,7 @@ Organizations:
 
         OrdererEndpoints:
             - orderer.meatchain.cloud:7050
+            - orderer2.meatchain.cloud:9050
 
     - &Org1
         # DefaultOrg defines the organization which is used in the sampleconfig

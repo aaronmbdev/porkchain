@@ -125,7 +125,7 @@ function createOrgs() {
     if [ $res -ne 0 ]; then
         fatalln "Failed to generate certificates..."
     fi
-
+  
 
   infoln "Generating CCP files for Farm and Factory"
   ./organizations/ccp-generate.sh
@@ -147,6 +147,7 @@ function networkUp() {
   if [ $? -ne 0 ]; then
     fatalln "Unable to start network"
   fi
+
 }
 
 function createChannel() {
