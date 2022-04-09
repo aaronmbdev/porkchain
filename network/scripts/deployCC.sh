@@ -164,7 +164,6 @@ checkCommitReadiness 3 "\"FarmMSP\": true" "\"FactoryMSP\": true" "\"MarketMSP\"
 
 ## now that we know for sure both orgs have approved, commit the definition
 commitChaincodeDefinition 1 2
-commitChaincodeDefinition 2 3
 
 ## query on both orgs to see that the definition committed successfully
 queryCommitted 1
