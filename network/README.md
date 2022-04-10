@@ -1,14 +1,54 @@
-# Running the test network
+# Running the network
 
-You can use the `./network.sh` script to stand up a simple Fabric test network. The test network has two peer organizations with one peer each and a single node raft ordering service. You can also use the `./network.sh` script to create channels and deploy chaincode. For more information, see [Using the Fabric test network](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html). The test network is being introduced in Fabric v2.0 as the long term replacement for the `first-network` sample.
+This folder contains the scripts and artifacts required to run a hyperledger development network according to the diagram of the documentation. 
 
-Before you can deploy the test network, you need to follow the instructions to [Install the Samples, Binaries and Docker Images](https://hyperledger-fabric.readthedocs.io/en/latest/install.html) in the Hyperledger Fabric documentation.
+The entrypoint is the file `network.sh` it has the required options to operate a network.
+
+## Turning on the network
+
+To launch the docker containers of the orderer and peer nodes you only need to execute
+
+```bash
+./network.sh up
+```
+
+Note that this will not create a channel. If the channel was created previously, you can only turn on the network.
+
+## Turning off the network
+
+This option will shutdown and delete any persistence related to the network. This is useful when you need to start from scratch.
+
+```bash
+./network.sh down
+```
+
+## Turning on the network and create a channel
+
+The following option will turn on the network and create the meatchannel.
+
+```bash
+./network.sh createChannel
+```
+
+## Deploy a smart contract
+
+To deploy a smart contract you need to first launch the network with a channel.
+Then you can execute the following command.
+
+```bash
+./network.sh deployCC -ccn NAME -ccp PATH -ccl LANG [-cci initLedger]
+```
+
+Where NAME is the name of the chaincode to be deployed. PATH is where the code is located (only the folder) and LANG is the language that the chaincode is written. It could be either Go, Java or Javascript.
+
+The `cci` attribute is optional and is used to launch an init function. It may be useful to launch the contract and create some initial data. In the example, the script will be calling the function `initLedger` of the contract as soon as it is deployed.
 
 ## Using the Peer commands
 
-The `setOrgEnv.sh` script can be used to set up the environment variables for the organizations, this will help to be able to use the `peer` commands directly.
+If you need to execute peer commands you can either attach a terminal to one of the containers or also use the `setOrgEnv.sh` script to setup the environment of a given Organization.
+There are two available peer configs: Farm or Factory.
 
-First, ensure that the peer binaries are on your path, and the Fabric Config path is set assuming that you're in the `test-network` directory.
+First you will need to add the Fabric binaries to the PATH.
 
 ```bash
  export PATH=$PATH:$(realpath ../bin)
@@ -18,12 +58,9 @@ First, ensure that the peer binaries are on your path, and the Fabric Config pat
 You can then set up the environment variables for each organization. The `./setOrgEnv.sh` command is designed to be run as follows.
 
 ```bash
-export $(./setOrgEnv.sh Org2 | xargs)
+export $(./setOrgEnv.sh ORG | xargs)
 ```
 
-(Note bash v4 is required for the scripts.)
-
-You will now be able to run the `peer` commands in the context of Org2. If a different command prompt, you can run the same command with Org1 instead.
-The `setOrgEnv` script outputs a series of `<name>=<value>` strings. These can then be fed into the export command for your current shell.
+Change ORG by either Farm or Factory.
 
 

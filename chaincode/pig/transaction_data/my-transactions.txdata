@@ -1,0 +1,44 @@
+[
+    {
+        "transactionName": "PigExists",
+        "transactionLabel": "A test PigExists transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "CreatePig",
+        "transactionLabel": "A test CreatePig transaction",
+        "arguments": [
+            "001",
+            "some value"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "ReadPig",
+        "transactionLabel": "A test ReadPig transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "UpdatePig",
+        "transactionLabel": "A test UpdatePig transaction",
+        "arguments": [
+            "001",
+            "some other value"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "DeletePig",
+        "transactionLabel": "A test DeletePig transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    }
+]
