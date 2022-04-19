@@ -3,44 +3,43 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-
+	"time"
+	"github.com/fxtlabs/date"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
+	"math/rand"
 )
 
-// PigContract contract for managing CRUD for Pig
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789")
+
 type PigContract struct {
 	contractapi.Contract
 }
 
-// PigExists returns true when asset with given ID exists in world state
-func (c *PigContract) PigExists(ctx contractapi.TransactionContextInterface, pigID string) (bool, error) {
-	data, err := ctx.GetStub().GetState(pigID)
+func (c *PigContract) generateID(ctx contractapi.TransactionContextInterface) (string,error) {
+	rand.Seed(time.Now().UnixNano())
+	b := make([]rune, 12)
+    for i := range b {
+        b[i] = letters[rand.Intn(len(letters))]
+    }
 
+	exists, err := c.EntityExists(ctx, string(b))
+	if err != nil {
+		return "", fmt.Errorf("Could not read from world state. %s", err)
+	} else if exists {
+		return c.generateID(ctx)
+	}
+
+    return string(b), nil
+}
+
+func (c *PigContract) EntityExists(ctx contractapi.TransactionContextInterface, entityId string) (bool,error) {
+	data, err := ctx.GetStub().GetState(entityId)
 	if err != nil {
 		return false, err
 	}
-
 	return data != nil, nil
 }
 
-// CreatePig creates a new instance of Pig
-func (c *PigContract) CreatePig(ctx contractapi.TransactionContextInterface, pigID string, value string) error {
-	exists, err := c.PigExists(ctx, pigID)
-	if err != nil {
-		return fmt.Errorf("Could not read from world state. %s", err)
-	} else if exists {
-		return fmt.Errorf("The asset %s already exists", pigID)
-	}
-
-	pig := new(Pig)
-	pig.ID = value
-
-	bytes, _ := json.Marshal(pig)
-
-	return ctx.GetStub().PutState(pigID, bytes)
-}
-
-// ReadPig retrieves an instance of Pig from the world state
 func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID string) (*Pig, error) {
 	exists, err := c.PigExists(ctx, pigID)
 	if err != nil {
@@ -62,8 +61,7 @@ func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID
 	return pig, nil
 }
 
-// UpdatePig retrieves an instance of Pig from the world state and updates its value
-func (c *PigContract) UpdatePig(ctx contractapi.TransactionContextInterface, pigID string, newValue string) error {
+/*func (c *PigContract) UpdatePig(ctx contractapi.TransactionContextInterface, pigID string, newValue string) error {
 	exists, err := c.PigExists(ctx, pigID)
 	if err != nil {
 		return fmt.Errorf("Could not read from world state. %s", err)
@@ -77,16 +75,60 @@ func (c *PigContract) UpdatePig(ctx contractapi.TransactionContextInterface, pig
 	bytes, _ := json.Marshal(pig)
 
 	return ctx.GetStub().PutState(pigID, bytes)
+}*/
+
+/* Find the functions we should interact with below */
+
+func (c *PigContract) CageExists(ctx contractapi.TransactionContextInterface, cageId string) (bool, error) {
+	return c.EntityExists(ctx, cageId);
 }
 
-// DeletePig deletes an instance of Pig from the world state
-func (c *PigContract) DeletePig(ctx contractapi.TransactionContextInterface, pigID string) error {
-	exists, err := c.PigExists(ctx, pigID)
+
+func (c *PigContract) PigExists(ctx contractapi.TransactionContextInterface, pigID string) (bool, error) {
+	return c.EntityExists(ctx, pigID);
+}
+
+func (c *PigContract) CreatePig(
+	ctx contractapi.TransactionContextInterface, 
+	parentId string,
+	birthdate string,
+	breed string,
+	location string,
+	status string ) error {
+		
+	if parentId != "" {
+		exists, err := c.PigExists(ctx, parentId)
+		if err != nil {
+			return fmt.Errorf("Could not read from world state. %s", err)
+		} else if !exists {
+			return fmt.Errorf("The parent %s not exists", parentId)
+		}
+	}
+
+	parsedDate, err := date.ParseISO(birthdate)
+	if err != nil {
+		return fmt.Errorf("Error parsing birthdate. %s", err)
+	}
+
+	exists, err := c.CageExists(ctx, location)
 	if err != nil {
 		return fmt.Errorf("Could not read from world state. %s", err)
 	} else if !exists {
-		return fmt.Errorf("The asset %s does not exist", pigID)
+		return fmt.Errorf("The cage %s not exists", location)
 	}
 
-	return ctx.GetStub().DelState(pigID)
+	pig := Pig{
+		ParentID: parentId,
+		Birthdate: parsedDate,
+		Breed: breed,
+		Location: location,
+		Status: status,
+	}
+
+	bytes, _ := json.Marshal(pig)
+	id, err := c.generateID(ctx)
+	if err != nil {
+		return fmt.Errorf("Could not read from world state. %s", err)
+	}
+	return ctx.GetStub().PutState(id, bytes)
 }

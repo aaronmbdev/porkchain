@@ -11,7 +11,7 @@ import (
 
 func main() {
 	pigContract := new(PigContract)
-	pigContract.Info.Version = "0.0.1"
+	pigContract.Info.Version = "0.1.0"
 	pigContract.Info.Description = "Pig Management Smart Contract"
 	pigContract.Info.License = new(metadata.LicenseMetadata)
 	pigContract.Info.License.Name = "Apache-2.0"
@@ -20,7 +20,7 @@ func main() {
 
 	chaincode, err := contractapi.NewChaincode(pigContract)
 	chaincode.Info.Title = "pig chaincode"
-	chaincode.Info.Version = "0.0.1"
+	chaincode.Info.Version = "0.1.0"
 
 	if err != nil {
 		panic("Could not create chaincode from PigContract." + err.Error())
