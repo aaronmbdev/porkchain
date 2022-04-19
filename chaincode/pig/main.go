@@ -1,7 +1,3 @@
-/*
- * SPDX-License-Identifier: Apache-2.0
- */
-
 package main
 
 import (
@@ -17,7 +13,6 @@ func main() {
 	pigContract.Info.License.Name = "Apache-2.0"
 	pigContract.Info.Contact = new(metadata.ContactMetadata)
 	pigContract.Info.Contact.Name = "Aaron J. Morales Botton"
-
 	chaincode, err := contractapi.NewChaincode(pigContract)
 	chaincode.Info.Title = "pig chaincode"
 	chaincode.Info.Version = "0.1.0"
