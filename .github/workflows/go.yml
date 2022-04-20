@@ -17,7 +17,7 @@ jobs:
         go-version: 1.18
     
     - name: Configure ENV
-      run: go mod init ./chaincode/pig
+      run: go env -w GO111MODULE=auto
 
     - name: Build
       run: go build -v ./chaincode/pig
