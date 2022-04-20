@@ -93,3 +93,25 @@ func (c *PigContract) CreatePig(
 	}
 	return ctx.GetStub().PutState(id, bytes)
 }
+
+func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, start string, end string, bookmark string) ([]*Pig, error) {
+	iterator, _, err := ctx.GetStub().GetStateByRangeWithPagination(start, end, 10, bookmark)
+	if err != nil {
+		return nil, fmt.Errorf("There was an error trying to list the pigs: %s", err)
+	}
+	defer iterator.Close()
+
+	var assets []*Pig
+	for iterator.HasNext() {
+		response, err := iterator.Next()
+		if err != nil {
+			return nil, err
+		}
+		var pig Pig
+		err = json.Unmarshal(response.Value, &pig)
+		if err == nil {
+			assets = append(assets, &pig)
+		}
+	}
+	return assets, nil
+}

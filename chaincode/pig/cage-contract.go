@@ -49,3 +49,25 @@ func (c *PigContract) DeleteCage(ctx contractapi.TransactionContextInterface, id
 	}
 	return ctx.GetStub().DelState(id)
 }
+
+func (c *PigContract) ListCages(ctx contractapi.TransactionContextInterface, start string, end string, bookmark string) ([]*Cage, error) {
+	iterator, _, err := ctx.GetStub().GetStateByRangeWithPagination(start, end, 10, bookmark)
+	if err != nil {
+		return nil, fmt.Errorf("There was an error trying to list the cages: %s", err)
+	}
+	defer iterator.Close()
+
+	var assets []*Cage
+	for iterator.HasNext() {
+		response, err := iterator.Next()
+		if err != nil {
+			return nil, err
+		}
+		var cage Cage
+		err = json.Unmarshal(response.Value, &cage)
+		if err == nil {
+			assets = append(assets, &cage)
+		}
+	}
+	return assets, nil
+}
