@@ -1,4 +1,4 @@
-name: Go for Pig Chaincode
+name: Go Tests for Pig Chaincode
 
 on:
   pull_request:
