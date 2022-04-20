@@ -18,3 +18,4 @@ jobs:
     
     - name: Run Tests
       run: go env -w GO111MODULE=auto && cd chaincode/pig && go get && go test -v ./chaincode/pig
+
