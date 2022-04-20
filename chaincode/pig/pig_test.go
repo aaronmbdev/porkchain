@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/fxtlabs/date"
 	"github.com/stretchr/testify/mock"
-	"testing"
 )
 
 func configureStubPig() (*MockContext, *MockStub) {
@@ -33,10 +32,6 @@ func configureStubPig() (*MockContext, *MockStub) {
 	mc.On("GetStub").Return(ms)
 
 	return mc, ms
-}
-
-func TestCreateBornPig(t *testing.T) {
-	//TODO crearcerdoconParent, nonExistingParent
 }
 
 /*func TestReadPig(t *testing.T) {
