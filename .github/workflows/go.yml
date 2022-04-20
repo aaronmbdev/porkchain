@@ -22,5 +22,11 @@ jobs:
     - name: Install dependencies for tests
       run: cd chaincode/pig && go get
 
-    - name: Test
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test
       run: go test -v ./chaincode/pig
+
