@@ -19,6 +19,7 @@ func (c *PigContract) CreateCage(ctx contractapi.TransactionContextInterface, na
 		Name: name,
 	}
 	cageBytes, _ := json.Marshal(cage)
+	id = "CAGE_" + id
 	return ctx.GetStub().PutState(id, cageBytes)
 }
 
