@@ -17,17 +17,20 @@ type Cage struct {
 }
 
 type FeedingRecord struct {
-	PigID 	 string  `json:"pigId"`
-	Data 	 string  `json:"data"`
+	PigID string    `json:"pigId"`
+	Date  date.Date `json:"date"`
+	Data  string    `json:"data"`
 }
 
 type HealthRecord struct {
-	PigID 	 string  `json:"pigId"`
-	VetID 	 string  `json:"vetId"`
-	Data 	 string  `json:"data"`
+	PigID string    `json:"pigId"`
+	Date  date.Date `json:"date"`
+	VetID string    `json:"vetId"`
+	Data  string    `json:"data"`
 }
 
 type UpdateRecord struct {
-	PigID 	 string	 `json:"pigId"`
-	Data 	 string  `json:"data"`
+	PigID string    `json:"pigId"`
+	Date  date.Date `json:"date"`
+	Data  string    `json:"data"`
 }

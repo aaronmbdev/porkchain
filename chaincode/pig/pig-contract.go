@@ -47,34 +47,51 @@ func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID
 	return ctx.GetStub().PutState(pigID, bytes)
 }*/
 
-/* Find the functions we should interact with below */
+func (c *PigContract) SlaughterPig(ctx contractapi.TransactionContextInterface, pigID string) error {
+	pig, err := c.ReadPig(ctx, pigID)
+	if err != nil {
+		return err
+	}
+	if pig.Status != PigStatus_alive {
+		return fmt.Errorf("The pig %s was already slaughtered", pigID)
+	}
+	pig.Status = PigStatus_slaughtered
+	pigBytes, _ := json.Marshal(pig)
+
+	err = c.createUpdateRecord(ctx, pigID, "The pig was slaughtered")
+	if err != nil {
+		return err
+	}
+
+	return ctx.GetStub().PutState(pigID, pigBytes)
+}
 
 func (c *PigContract) CreatePig(
 	ctx contractapi.TransactionContextInterface,
 	parentId string,
 	birthdate string,
 	breed string,
-	location string) error {
+	location string) (string, error) {
 
 	if parentId != "" {
 		exists, err := c.PigExists(ctx, parentId)
 		if err != nil {
-			return fmt.Errorf(error_state_reading)
+			return "", fmt.Errorf(error_state_reading)
 		} else if !exists {
-			return fmt.Errorf(error_parent_not_exists, parentId)
+			return "", fmt.Errorf(error_parent_not_exists, parentId)
 		}
 	}
 
 	parsedDate, err := date.ParseISO(birthdate)
 	if err != nil {
-		return fmt.Errorf(error_parsing_date, err)
+		return "", fmt.Errorf(error_parsing_date, err)
 	}
 
 	exists, err := c.CageExists(ctx, location)
 	if err != nil {
-		return fmt.Errorf(error_state_reading)
+		return "", fmt.Errorf(error_state_reading)
 	} else if !exists {
-		return fmt.Errorf(error_cage_not_exists, location)
+		return "", fmt.Errorf(error_cage_not_exists, location)
 	}
 
 	pig := Pig{
@@ -88,9 +105,10 @@ func (c *PigContract) CreatePig(
 	bytes, _ := json.Marshal(pig)
 	id, err := c.generateID(ctx)
 	if err != nil {
-		return fmt.Errorf(error_state_reading)
+		return "", fmt.Errorf(error_state_reading)
 	}
-	return ctx.GetStub().PutState(id, bytes)
+	id = "PIG_" + id
+	return id, ctx.GetStub().PutState(id, bytes)
 }
 
 func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, start string, end string, bookmark string) ([]*Pig, error) {
@@ -108,7 +126,7 @@ func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, star
 		}
 		var pig Pig
 		err = json.Unmarshal(response.Value, &pig)
-		if err == nil {
+		if err == nil && pig.Status == PigStatus_alive {
 			assets = append(assets, &pig)
 		}
 	}
