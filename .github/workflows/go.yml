@@ -1,4 +1,4 @@
-name: Go Tests
+name: Go for Pig Chaincode
 
 on:
   pull_request:
@@ -14,10 +14,16 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
-        go-version: 1.18
+        go-version: 1.13
+    
+    - name: Configure env
+      run: go env -w GO111MODULE=auto
+
+    - name: Install dependencies for tests
+      run: cd chaincode/pig && go get
 
     - name: Build
-      run: go build -v ./chaincode/pig
+      run: cd chaincode/pig && go build -v
 
     - name: Test
-      run: go test -test.v -timeout 3000ms ./chaincode/pig 
+      run: cd chaincode/pig && go test -v 

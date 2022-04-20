@@ -2,6 +2,8 @@
 
 # Meatchain - Hyperledger Fabric
 
+[![Go Tests](https://github.com/aaronmbdev/porkchain/actions/workflows/go.yml/badge.svg)](https://github.com/aaronmbdev/porkchain/actions/workflows/go.yml)
+
 This is the repository of the Meatchain project. A Meat Traceability System based in Blockchain. It was built using Hyperledger Fabric and ReactJs for the frontend apps. 
 
 ## Folder structure

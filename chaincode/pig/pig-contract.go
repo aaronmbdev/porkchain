@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 	"github.com/fxtlabs/date"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 	"math/rand"
+	"time"
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789")
@@ -15,12 +15,12 @@ type PigContract struct {
 	contractapi.Contract
 }
 
-func (c *PigContract) generateID(ctx contractapi.TransactionContextInterface) (string,error) {
+func (c *PigContract) generateID(ctx contractapi.TransactionContextInterface) (string, error) {
 	rand.Seed(time.Now().UnixNano())
 	b := make([]rune, 12)
-    for i := range b {
-        b[i] = letters[rand.Intn(len(letters))]
-    }
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
 
 	exists, err := c.EntityExists(ctx, string(b))
 	if err != nil {
@@ -28,11 +28,10 @@ func (c *PigContract) generateID(ctx contractapi.TransactionContextInterface) (s
 	} else if exists {
 		return c.generateID(ctx)
 	}
-
-    return string(b), nil
+	return string(b), nil
 }
 
-func (c *PigContract) EntityExists(ctx contractapi.TransactionContextInterface, entityId string) (bool,error) {
+func (c *PigContract) EntityExists(ctx contractapi.TransactionContextInterface, entityId string) (bool, error) {
 	data, err := ctx.GetStub().GetState(entityId)
 	if err != nil {
 		return false, err
@@ -40,7 +39,15 @@ func (c *PigContract) EntityExists(ctx contractapi.TransactionContextInterface, 
 	return data != nil, nil
 }
 
-func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID string) (*Pig, error) {
+func (c *PigContract) CageExists(ctx contractapi.TransactionContextInterface, cageId string) (bool, error) {
+	return c.EntityExists(ctx, cageId)
+}
+
+func (c *PigContract) PigExists(ctx contractapi.TransactionContextInterface, pigID string) (bool, error) {
+	return c.EntityExists(ctx, pigID)
+}
+
+/*func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID string) (*Pig, error) {
 	exists, err := c.PigExists(ctx, pigID)
 	if err != nil {
 		return nil, fmt.Errorf("Could not read from world state. %s", err)
@@ -59,7 +66,7 @@ func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID
 	}
 
 	return pig, nil
-}
+}*/
 
 /*func (c *PigContract) UpdatePig(ctx contractapi.TransactionContextInterface, pigID string, newValue string) error {
 	exists, err := c.PigExists(ctx, pigID)
@@ -79,23 +86,14 @@ func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID
 
 /* Find the functions we should interact with below */
 
-func (c *PigContract) CageExists(ctx contractapi.TransactionContextInterface, cageId string) (bool, error) {
-	return c.EntityExists(ctx, cageId);
-}
-
-
-func (c *PigContract) PigExists(ctx contractapi.TransactionContextInterface, pigID string) (bool, error) {
-	return c.EntityExists(ctx, pigID);
-}
-
 func (c *PigContract) CreatePig(
-	ctx contractapi.TransactionContextInterface, 
+	ctx contractapi.TransactionContextInterface,
 	parentId string,
 	birthdate string,
 	breed string,
 	location string,
-	status string ) error {
-		
+	status string) error {
+
 	if parentId != "" {
 		exists, err := c.PigExists(ctx, parentId)
 		if err != nil {
@@ -118,11 +116,11 @@ func (c *PigContract) CreatePig(
 	}
 
 	pig := Pig{
-		ParentID: parentId,
+		ParentID:  parentId,
 		Birthdate: parsedDate,
-		Breed: breed,
-		Location: location,
-		Status: status,
+		Breed:     breed,
+		Location:  location,
+		Status:    status,
 	}
 
 	bytes, _ := json.Marshal(pig)
