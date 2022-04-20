@@ -15,17 +15,17 @@ func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID
 	bytes, err := ctx.GetStub().GetState(pigID)
 
 	if err != nil {
-		return nil, fmt.Errorf(stateError)
+		return nil, fmt.Errorf(error_state_reading)
 	}
 	if bytes == nil {
-		return nil, fmt.Errorf("The asset %s does not exist", pigID)
+		return nil, fmt.Errorf(error_asset_dont_exists, pigID)
 	}
 
 	pig := new(Pig)
 	err = json.Unmarshal(bytes, pig)
 
 	if err != nil {
-		return nil, fmt.Errorf("The entity requested is not a Pig")
+		return nil, fmt.Errorf(error_not_a_pig)
 	}
 
 	return pig, nil
@@ -54,28 +54,27 @@ func (c *PigContract) CreatePig(
 	parentId string,
 	birthdate string,
 	breed string,
-	location string,
-	status string) error {
+	location string) error {
 
 	if parentId != "" {
 		exists, err := c.PigExists(ctx, parentId)
 		if err != nil {
-			return fmt.Errorf(stateError)
+			return fmt.Errorf(error_state_reading)
 		} else if !exists {
-			return fmt.Errorf("The parent %s doesn't exists", parentId)
+			return fmt.Errorf(error_parent_not_exists, parentId)
 		}
 	}
 
 	parsedDate, err := date.ParseISO(birthdate)
 	if err != nil {
-		return fmt.Errorf("Error parsing birthdate. %s", err)
+		return fmt.Errorf(error_parsing_date, err)
 	}
 
 	exists, err := c.CageExists(ctx, location)
 	if err != nil {
-		return fmt.Errorf(stateError)
+		return fmt.Errorf(error_state_reading)
 	} else if !exists {
-		return fmt.Errorf("The cage %s doesn't exists", location)
+		return fmt.Errorf(error_cage_not_exists, location)
 	}
 
 	pig := Pig{
@@ -83,13 +82,13 @@ func (c *PigContract) CreatePig(
 		Birthdate: parsedDate,
 		Breed:     breed,
 		Location:  location,
-		Status:    status,
+		Status:    PigStatus_alive,
 	}
 
 	bytes, _ := json.Marshal(pig)
 	id, err := c.generateID(ctx)
 	if err != nil {
-		return fmt.Errorf(stateError)
+		return fmt.Errorf(error_state_reading)
 	}
 	return ctx.GetStub().PutState(id, bytes)
 }
@@ -97,7 +96,7 @@ func (c *PigContract) CreatePig(
 func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, start string, end string, bookmark string) ([]*Pig, error) {
 	iterator, _, err := ctx.GetStub().GetStateByRangeWithPagination(start, end, 10, bookmark)
 	if err != nil {
-		return nil, fmt.Errorf("There was an error trying to list the pigs: %s", err)
+		return nil, fmt.Errorf(error_list_pigs, err)
 	}
 	defer iterator.Close()
 

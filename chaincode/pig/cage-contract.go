@@ -13,7 +13,7 @@ func (c *PigContract) CageExists(ctx contractapi.TransactionContextInterface, ca
 func (c *PigContract) CreateCage(ctx contractapi.TransactionContextInterface, name string) error {
 	id, err := c.generateID(ctx)
 	if err != nil {
-		return fmt.Errorf(stateError)
+		return fmt.Errorf(error_state_reading)
 	}
 	cage := Cage{
 		Name: name,
@@ -26,7 +26,7 @@ func (c *PigContract) ReadCage(ctx contractapi.TransactionContextInterface, id s
 	bytes, err := ctx.GetStub().GetState(id)
 
 	if err != nil {
-		return nil, fmt.Errorf(stateError)
+		return nil, fmt.Errorf(error_state_reading)
 	}
 	if bytes == nil {
 		return nil, fmt.Errorf("The asset %s does not exist", id)

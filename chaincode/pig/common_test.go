@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-const getStateError = "there was an error communicating with the Blockchain state"
+const getStateError = "There was an error communicating with the Blockchain state"
 
 var nilBytes []byte
 var someBytes = []byte("some value")

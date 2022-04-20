@@ -38,19 +38,19 @@ func TestCreatePig(t *testing.T) {
 	birthdateString := "2021-09-15"
 	expectedPig, _ := json.Marshal(testPig)
 
-	err = c.CreatePig(ctx, testPig.ParentID, birthdateString, testPig.Breed, testPig.Location, testPig.Status)
+	err = c.CreatePig(ctx, testPig.ParentID, birthdateString, testPig.Breed, testPig.Location)
 	assert.Nil(t, err)
 	stub.AssertCalled(t, "PutState", mock.AnythingOfType("string"), expectedPig)
 
-	err = c.CreatePig(ctx, testPig.ParentID, "badDate", testPig.Breed, testPig.Location, testPig.Status)
+	err = c.CreatePig(ctx, testPig.ParentID, "badDate", testPig.Breed, testPig.Location)
 	assert.NotNil(t, err)
 	assert.EqualError(t, err, "Error parsing birthdate. Date.ParseISO: cannot parse badDate", "should error if using incorrect date")
 
-	err = c.CreatePig(ctx, testPig.ParentID, birthdateString, testPig.Breed, "badLocation", testPig.Status)
+	err = c.CreatePig(ctx, testPig.ParentID, birthdateString, testPig.Breed, "badLocation")
 	assert.NotNil(t, err)
 	assert.EqualError(t, err, "The cage badLocation doesn't exists", "should error when a cage doesnt exists")
 
-	err = c.CreatePig(ctx, "BADSTATE", birthdateString, testPig.Breed, "badLocation", testPig.Status)
+	err = c.CreatePig(ctx, "BADSTATE", birthdateString, testPig.Breed, "badLocation")
 	assert.NotNil(t, err)
 	assert.EqualError(t, err, getStateError, "should error when there's an error connecting with the world state")
 }
@@ -65,12 +65,12 @@ func TestNewBornPigs(t *testing.T) {
 	bornPig.ParentID = "ABC1234"
 	expectedPig, _ := json.Marshal(bornPig)
 
-	err = c.CreatePig(ctx, bornPig.ParentID, birthdateString, bornPig.Breed, bornPig.Location, bornPig.Status)
+	err = c.CreatePig(ctx, bornPig.ParentID, birthdateString, bornPig.Breed, bornPig.Location)
 	assert.Nil(t, err)
 	stub.AssertCalled(t, "PutState", mock.AnythingOfType("string"), expectedPig)
 
 	bornPig.ParentID = "IDONTEXIST"
-	err = c.CreatePig(ctx, bornPig.ParentID, birthdateString, bornPig.Breed, bornPig.Location, bornPig.Status)
+	err = c.CreatePig(ctx, bornPig.ParentID, birthdateString, bornPig.Breed, bornPig.Location)
 	assert.NotNil(t, err)
 	assert.EqualError(t, err, "The parent IDONTEXIST doesn't exists", "should error when a cage doesnt exists")
 

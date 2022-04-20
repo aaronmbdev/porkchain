@@ -7,8 +7,7 @@ import (
 	"time"
 )
 
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789")
-var stateError = "there was an error communicating with the Blockchain state"
+var letters = []rune(IdGeneratorRune)
 
 type PigContract struct {
 	contractapi.Contract
@@ -23,7 +22,7 @@ func (c *PigContract) generateID(ctx contractapi.TransactionContextInterface) (s
 
 	exists, err := c.EntityExists(ctx, string(b))
 	if err != nil {
-		return "", fmt.Errorf(stateError)
+		return "", fmt.Errorf(error_state_reading)
 	} else if exists {
 		return c.generateID(ctx)
 	}
