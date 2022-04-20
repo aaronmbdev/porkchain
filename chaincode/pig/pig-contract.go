@@ -5,61 +5,23 @@ import (
 	"fmt"
 	"github.com/fxtlabs/date"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
-	"math/rand"
-	"time"
 )
-
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789")
-var stateError = "there was an error communicating with the Blockchain state"
-
-type PigContract struct {
-	contractapi.Contract
-}
-
-func (c *PigContract) generateID(ctx contractapi.TransactionContextInterface) (string, error) {
-	rand.Seed(time.Now().UnixNano())
-	b := make([]rune, 12)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
-	}
-
-	exists, err := c.EntityExists(ctx, string(b))
-	if err != nil {
-		return "", fmt.Errorf(stateError, err)
-	} else if exists {
-		return c.generateID(ctx)
-	}
-	return string(b), nil
-}
-
-func (c *PigContract) EntityExists(ctx contractapi.TransactionContextInterface, entityId string) (bool, error) {
-	data, err := ctx.GetStub().GetState(entityId)
-	if err != nil {
-		return false, err
-	}
-	return data != nil, nil
-}
-
-func (c *PigContract) CageExists(ctx contractapi.TransactionContextInterface, cageId string) (bool, error) {
-	return c.EntityExists(ctx, cageId)
-}
 
 func (c *PigContract) PigExists(ctx contractapi.TransactionContextInterface, pigID string) (bool, error) {
 	return c.EntityExists(ctx, pigID)
 }
 
 func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID string) (*Pig, error) {
-	exists, err := c.PigExists(ctx, pigID)
+	bytes, err := ctx.GetStub().GetState(pigID)
+
 	if err != nil {
 		return nil, fmt.Errorf(stateError)
-	} else if !exists {
+	}
+	if bytes == nil {
 		return nil, fmt.Errorf("The asset %s does not exist", pigID)
 	}
 
-	bytes, _ := ctx.GetStub().GetState(pigID)
-
 	pig := new(Pig)
-
 	err = json.Unmarshal(bytes, pig)
 
 	if err != nil {
