@@ -6,6 +6,8 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+const getStateError = "world state get error"
+
 type MockStub struct {
 	shim.ChaincodeStubInterface
 	mock.Mock
