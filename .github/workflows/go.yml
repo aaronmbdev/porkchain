@@ -20,4 +20,4 @@ jobs:
       run: go build -v ./chaincode/pig
 
     - name: Test
-      run: go test -v ./chaincode/pig
+      run: go test -test.v -timeout 3000ms ./chaincode/pig 
