@@ -19,8 +19,11 @@ jobs:
     - name: Configure env
       run: go env -w GO111MODULE=auto
 
-    - name: Install dependencies
+    - name: Install dependencies for tests
       run: cd chaincode/pig && go get -d -t ./...
+
+    - name: Install dependencies for build
+      run: go get -d ./...
 
     - name: Build
       run: go build -v ./chaincode/pig
