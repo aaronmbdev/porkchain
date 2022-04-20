@@ -16,8 +16,11 @@ jobs:
       with:
         go-version: 1.18
     
-    - name: Configure ENV
+    - name: Configure env
       run: go env -w GO111MODULE=auto
+
+    - name: Install dependencies
+      run: go get -d ./...
 
     - name: Build
       run: go build -v ./chaincode/pig
