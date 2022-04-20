@@ -48,10 +48,10 @@ func (c *PigContract) PigExists(ctx contractapi.TransactionContextInterface, pig
 	return c.EntityExists(ctx, pigID)
 }
 
-/*func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID string) (*Pig, error) {
+func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID string) (*Pig, error) {
 	exists, err := c.PigExists(ctx, pigID)
 	if err != nil {
-		return nil, fmt.Errorf("Could not read from world state. %s", err)
+		return nil, fmt.Errorf(stateError)
 	} else if !exists {
 		return nil, fmt.Errorf("The asset %s does not exist", pigID)
 	}
@@ -63,11 +63,11 @@ func (c *PigContract) PigExists(ctx contractapi.TransactionContextInterface, pig
 	err = json.Unmarshal(bytes, pig)
 
 	if err != nil {
-		return nil, fmt.Errorf("Could not unmarshal world state data to type Pig")
+		return nil, fmt.Errorf("The entity requested is not a Pig")
 	}
 
 	return pig, nil
-}*/
+}
 
 /*func (c *PigContract) UpdatePig(ctx contractapi.TransactionContextInterface, pigID string, newValue string) error {
 	exists, err := c.PigExists(ctx, pigID)
