@@ -10,6 +10,7 @@ import (
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789")
+var stateError = "there was an error communicating with the Blockchain state"
 
 type PigContract struct {
 	contractapi.Contract
@@ -24,7 +25,7 @@ func (c *PigContract) generateID(ctx contractapi.TransactionContextInterface) (s
 
 	exists, err := c.EntityExists(ctx, string(b))
 	if err != nil {
-		return "", fmt.Errorf("Could not read from world state. %s", err)
+		return "", fmt.Errorf(stateError, err)
 	} else if exists {
 		return c.generateID(ctx)
 	}
@@ -97,9 +98,9 @@ func (c *PigContract) CreatePig(
 	if parentId != "" {
 		exists, err := c.PigExists(ctx, parentId)
 		if err != nil {
-			return fmt.Errorf("Could not read from world state. %s", err)
+			return fmt.Errorf(stateError)
 		} else if !exists {
-			return fmt.Errorf("The parent %s not exists", parentId)
+			return fmt.Errorf("The parent %s doesn't exists", parentId)
 		}
 	}
 
@@ -110,9 +111,9 @@ func (c *PigContract) CreatePig(
 
 	exists, err := c.CageExists(ctx, location)
 	if err != nil {
-		return fmt.Errorf("Could not read from world state. %s", err)
+		return fmt.Errorf(stateError)
 	} else if !exists {
-		return fmt.Errorf("The cage %s not exists", location)
+		return fmt.Errorf("The cage %s doesn't exists", location)
 	}
 
 	pig := Pig{
@@ -126,7 +127,7 @@ func (c *PigContract) CreatePig(
 	bytes, _ := json.Marshal(pig)
 	id, err := c.generateID(ctx)
 	if err != nil {
-		return fmt.Errorf("Could not read from world state. %s", err)
+		return fmt.Errorf(stateError)
 	}
 	return ctx.GetStub().PutState(id, bytes)
 }

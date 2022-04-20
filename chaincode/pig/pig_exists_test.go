@@ -7,15 +7,12 @@ import (
 )
 
 func configureStubPigExists() (*MockContext, *MockStub) {
-	var nilBytes []byte
-
 	ms := new(MockStub)
 	ms.On("GetState", "statebad").Return(nilBytes, errors.New(getStateError))
 	ms.On("GetState", "missingkey").Return(nilBytes, nil)
 	ms.On("GetState", "existingkey").Return([]byte("some value"), nil)
 	mc := new(MockContext)
 	mc.On("GetStub").Return(ms)
-
 	return mc, ms
 }
 
