@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/fxtlabs/date"
-	"github.com/hyperledger/fabric-chaincode-go/shim"
-	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -13,37 +11,7 @@ import (
 
 const getStateError = "world state get error"
 
-type MockStub struct {
-	shim.ChaincodeStubInterface
-	mock.Mock
-}
-
-func (ms *MockStub) GetState(key string) ([]byte, error) {
-	args := ms.Called(key)
-	return args.Get(0).([]byte), args.Error(1)
-}
-
-func (ms *MockStub) PutState(key string, value []byte) error {
-	args := ms.Called(key, value)
-	return args.Error(0)
-}
-
-func (ms *MockStub) DelState(key string) error {
-	args := ms.Called(key)
-	return args.Error(0)
-}
-
-type MockContext struct {
-	contractapi.TransactionContextInterface
-	mock.Mock
-}
-
-func (mc *MockContext) GetStub() shim.ChaincodeStubInterface {
-	args := mc.Called()
-	return args.Get(0).(*MockStub)
-}
-
-func configureStub() (*MockContext, *MockStub) {
+func configureStubPig() (*MockContext, *MockStub) {
 	var nilBytes []byte
 
 	birthdate, _ := date.ParseISO("2021-09-15")
@@ -74,7 +42,7 @@ func TestPigExists(t *testing.T) {
 	var exists bool
 	var err error
 
-	ctx, _ := configureStub()
+	ctx, _ := configureStubPig()
 	c := new(PigContract)
 
 	exists, err = c.PigExists(ctx, "statebad")
