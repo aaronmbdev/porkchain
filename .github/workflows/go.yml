@@ -16,5 +16,14 @@ jobs:
       with:
         go-version: 1.13
     
-    - name: Run Tests
-      run: cd chaincode/pig && go env -w GO111MODULE=auto && go get && go test -v
+    - name: Configure env
+      run: go env -w GO111MODULE=auto
+
+    - name: Install dependencies for tests
+      run: cd chaincode/pig && go get
+
+    - name: Build
+      run: go build -v
+
+    - name: Test
+      run: go test -v 
