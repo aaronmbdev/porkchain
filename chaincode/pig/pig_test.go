@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/fxtlabs/date"
 	"github.com/stretchr/testify/mock"
-	"testing"
 )
 
 func configureStubPig() (*MockContext, *MockStub) {
@@ -33,26 +32,6 @@ func configureStubPig() (*MockContext, *MockStub) {
 	mc.On("GetStub").Return(ms)
 
 	return mc, ms
-}
-
-func TestCreatePig(t *testing.T) {
-	/*var err error
-	ctx, stub := configureStub()
-	c := new(PigContract)
-
-	//err = c.CreatePig(ctx, "statebad", "some value")
-	assert.EqualError(t, err, fmt.Sprintf("Could not read from world state. %s", getStateError), "should error when exists errors")
-
-	//err = c.CreatePig(ctx, "existingkey", "some value")
-	assert.EqualError(t, err, "The asset existingkey already exists", "should error when exists returns true")
-
-	//err = c.CreatePig(ctx, "missingkey", "some value")
-	stub.AssertCalled(t, "PutState", "missingkey", []byte("{\"value\":\"some value\"}"))*/
-	//TODO crearCerdo, wrongBirthdate, wrongLocation
-}
-
-func TestCreateBornPig(t *testing.T) {
-	//TODO crearcerdoconParent, nonExistingParent
 }
 
 /*func TestReadPig(t *testing.T) {

@@ -6,7 +6,21 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-const getStateError = "world state get error"
+const getStateError = "there was an error communicating with the Blockchain state"
+
+var nilBytes []byte
+var someBytes = []byte("some value")
+
+var mockedCageMatcher = mock.MatchedBy(func(arg string) bool {
+	return arg == "ABC1234"
+})
+var anyPigNotMockedCageMatcher = mock.MatchedBy(func(arg string) bool {
+	return arg != "ABC1234"
+})
+
+var badStateMatcher = mock.MatchedBy(func(arg string) bool {
+	return arg == "BADSTATE"
+})
 
 type MockStub struct {
 	shim.ChaincodeStubInterface
