@@ -17,4 +17,4 @@ jobs:
         go-version: 1.13
     
     - name: Run Tests
-      run: go env -w GO111MODULE=auto && cd chaincode/pig && go get && go test -v ./chaincode/pig
+      run: cd chaincode/pig && go env -w GO111MODULE=auto && go get && go test -v
