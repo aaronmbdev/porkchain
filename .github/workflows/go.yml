@@ -20,7 +20,10 @@ jobs:
       run: go env -w GO111MODULE=auto
 
     - name: Install dependencies for tests
-      run: cd chaincode/pig && go get -t
+      run: cd chaincode/pig && go mod download
+
+    - name: Build
+      run: go build -v ./chaincode/pig
 
     - name: Test
       run: go test -v ./chaincode/pig
