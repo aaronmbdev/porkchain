@@ -23,7 +23,7 @@ jobs:
       run: cd chaincode/pig && go get
 
     - name: Build
-      run: go build -v
+      run: cd chaincode/pig && go build -v
 
     - name: Test
-      run: go test -v 
+      run: cd chaincode/pig && go test -v 
