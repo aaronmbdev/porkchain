@@ -30,14 +30,14 @@ func (c *PigContract) ReadCage(ctx contractapi.TransactionContextInterface, id s
 		return nil, fmt.Errorf(error_state_reading)
 	}
 	if bytes == nil {
-		return nil, fmt.Errorf("The asset %s does not exist", id)
+		return nil, fmt.Errorf(error_asset_dont_exists, id)
 	}
 
 	cage := new(Cage)
 	err = json.Unmarshal(bytes, cage)
 
 	if err != nil {
-		return nil, fmt.Errorf("The entity requested is not a Cage")
+		return nil, fmt.Errorf(error_not_a_cage)
 	}
 
 	return cage, nil
@@ -54,7 +54,7 @@ func (c *PigContract) DeleteCage(ctx contractapi.TransactionContextInterface, id
 func (c *PigContract) ListCages(ctx contractapi.TransactionContextInterface, start string, end string, bookmark string) ([]*Cage, error) {
 	iterator, _, err := ctx.GetStub().GetStateByRangeWithPagination(start, end, 10, bookmark)
 	if err != nil {
-		return nil, fmt.Errorf("There was an error trying to list the cages: %s", err)
+		return nil, fmt.Errorf(error_list_cages, err)
 	}
 	defer iterator.Close()
 

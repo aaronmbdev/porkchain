@@ -32,6 +32,7 @@ func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID
 }
 func (c *PigContract) UpdatePig(
 	ctx contractapi.TransactionContextInterface,
+	pigId string,
 	parentId string,
 	birthdate string,
 	breed string,
@@ -61,12 +62,12 @@ func (c *PigContract) SlaughterPig(ctx contractapi.TransactionContextInterface, 
 		return err
 	}
 	if pig.Status != PigStatus_alive {
-		return fmt.Errorf("The pig %s was already slaughtered", pigID)
+		return fmt.Errorf(error_pig_slaughtered, pigID)
 	}
 	pig.Status = PigStatus_slaughtered
 	pigBytes, _ := json.Marshal(pig)
 
-	err = c.createUpdateRecord(ctx, pigID, "The pig was slaughtered")
+	err = c.createUpdateRecord(ctx, pigID, pig_slaughtered)
 	if err != nil {
 		return err
 	}
