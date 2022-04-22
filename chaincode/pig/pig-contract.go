@@ -30,6 +30,14 @@ func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID
 
 	return pig, nil
 }
+func (c *PigContract) UpdatePig(
+	ctx contractapi.TransactionContextInterface,
+	parentId string,
+	birthdate string,
+	breed string,
+	location string) error {
+	return nil
+}
 
 /*func (c *PigContract) UpdatePig(ctx contractapi.TransactionContextInterface, pigID string, newValue string) error {
 	exists, err := c.PigExists(ctx, pigID)
