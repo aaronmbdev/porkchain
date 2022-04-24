@@ -54,19 +54,3 @@ func TestReadCage(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.EqualError(t, err, "The entity requested is not a Cage")
 }
-
-func TestDeleteCage(t *testing.T) {
-	ctx, _ := configureStubCage()
-	c := new(PigContract)
-
-	err := c.DeleteCage(ctx, "ABC1234")
-	assert.Nil(t, err)
-
-	err = c.DeleteCage(ctx, "AnythingElse")
-	assert.NotNil(t, err)
-	assert.EqualError(t, err, "The asset AnythingElse does not exist")
-
-	err = c.DeleteCage(ctx, "not-a-cage")
-	assert.NotNil(t, err)
-	assert.EqualError(t, err, "The entity requested is not a Cage")
-}
