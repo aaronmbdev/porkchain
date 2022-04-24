@@ -16,4 +16,5 @@ const (
 	error_parsing_date      = "Error parsing birthdate. %s"
 	error_list_pigs         = "There was an error trying to list the pigs: %s"
 	error_list_cages        = "There was an error trying to list the cages: %s"
+	error_can_delete_cage   = "The cage %s cannot be deleted if there are pigs in it"
 )

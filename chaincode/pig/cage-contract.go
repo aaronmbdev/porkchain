@@ -48,6 +48,10 @@ func (c *PigContract) DeleteCage(ctx contractapi.TransactionContextInterface, id
 	if err != nil {
 		return err
 	}
+	pigsInCage, err := c.GetPigsInCage(ctx, id)
+	if len(pigsInCage) != 0 || err != nil {
+		return fmt.Errorf(error_can_delete_cage, id)
+	}
 	return ctx.GetStub().DelState(id)
 }
 
@@ -69,6 +73,33 @@ func (c *PigContract) ListCages(ctx contractapi.TransactionContextInterface, sta
 		if err == nil {
 			assets = append(assets, &cage)
 		}
+	}
+	return assets, nil
+}
+
+func (c *PigContract) GetPigsInCage(ctx contractapi.TransactionContextInterface, cageId string) ([]*Pig, error) {
+	_, err := c.ReadCage(ctx, cageId)
+	if err != nil {
+		return nil, err
+	}
+	queryString := fmt.Sprintf(`{"selector":{"docType":"asset","location":"%s"}}`, cageId)
+	iterator, errAux := ctx.GetStub().GetQueryResult(queryString)
+	if errAux != nil {
+		return nil, errAux
+	}
+	defer iterator.Close()
+	var assets []*Pig
+	for iterator.HasNext() {
+		result, err := iterator.Next()
+		if err != nil {
+			return nil, err
+		}
+		var pig Pig
+		err = json.Unmarshal(result.Value, &pig)
+		if err != nil {
+			return nil, err
+		}
+		assets = append(assets, &pig)
 	}
 	return assets, nil
 }
