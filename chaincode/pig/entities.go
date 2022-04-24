@@ -34,3 +34,8 @@ type UpdateRecord struct {
 	Date  date.Date `json:"date"`
 	Data  string    `json:"data"`
 }
+
+type Record struct {
+	Date date.Date `json:"date"`
+	Data string    `json:"data"`
+}

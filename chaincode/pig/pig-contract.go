@@ -167,3 +167,78 @@ func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, star
 	}
 	return assets, nil
 }
+
+func (c *PigContract) GetPigRecords(ctx contractapi.TransactionContextInterface, pigId string) ([]Record, error) {
+	queryString := fmt.Sprintf(`{"selector":{"docType":"asset","pigId":"%s"}}`, pigId)
+	iterator, err := ctx.GetStub().GetQueryResult(queryString)
+	if err != nil {
+		return nil, err
+	}
+	var parsed = false
+	var ret []Record
+	for iterator.HasNext() {
+		var record Record
+		response, err := iterator.Next()
+		if err != nil {
+			return nil, err
+		}
+		parsed, record = parseUpdateRecord(response.Value)
+		if parsed {
+			ret = append(ret, record)
+		}
+
+		if !parsed {
+			parsed, record = parseVetRecord(response.Value)
+			if parsed {
+				ret = append(ret, record)
+			}
+		}
+
+		if !parsed {
+			parsed, record = parseFeedRecord(response.Value)
+			if parsed {
+				ret = append(ret, record)
+			}
+		}
+	}
+	return ret, nil
+}
+
+func parseUpdateRecord(value []byte) (bool, Record) {
+	record := new(UpdateRecord)
+	err := json.Unmarshal(value, record)
+	if err != nil {
+		return false, Record{}
+	}
+	ret := Record{
+		Date: record.Date,
+		Data: "Update transaction: " + record.Data,
+	}
+	return true, ret
+}
+
+func parseVetRecord(value []byte) (bool, Record) {
+	record := new(HealthRecord)
+	err := json.Unmarshal(value, record)
+	if err != nil {
+		return false, Record{}
+	}
+	ret := Record{
+		Date: record.Date,
+		Data: "Veterinary information from Vet with ID " + record.VetID + " | " + record.Data,
+	}
+	return true, ret
+}
+
+func parseFeedRecord(value []byte) (bool, Record) {
+	record := new(FeedingRecord)
+	err := json.Unmarshal(value, record)
+	if err != nil {
+		return false, Record{}
+	}
+	ret := Record{
+		Date: record.Date,
+		Data: "Feeding information | " + record.Data,
+	}
+	return true, ret
+}

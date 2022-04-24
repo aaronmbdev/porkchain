@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
@@ -49,7 +50,7 @@ func (c *PigContract) DeleteCage(ctx contractapi.TransactionContextInterface, id
 		return err
 	}
 	pigsInCage, err := c.GetPigsInCage(ctx, id)
-	if len(pigsInCage) != 0 || err != nil {
+	if pigsInCage.HasNext() || err != nil {
 		return fmt.Errorf(error_can_delete_cage, id)
 	}
 	return ctx.GetStub().DelState(id)
@@ -77,7 +78,7 @@ func (c *PigContract) ListCages(ctx contractapi.TransactionContextInterface, sta
 	return assets, nil
 }
 
-func (c *PigContract) GetPigsInCage(ctx contractapi.TransactionContextInterface, cageId string) ([]*Pig, error) {
+func (c *PigContract) GetPigsInCage(ctx contractapi.TransactionContextInterface, cageId string) (shim.StateQueryIteratorInterface, error) {
 	_, err := c.ReadCage(ctx, cageId)
 	if err != nil {
 		return nil, err
@@ -88,18 +89,5 @@ func (c *PigContract) GetPigsInCage(ctx contractapi.TransactionContextInterface,
 		return nil, errAux
 	}
 	defer iterator.Close()
-	var assets []*Pig
-	for iterator.HasNext() {
-		result, err := iterator.Next()
-		if err != nil {
-			return nil, err
-		}
-		var pig Pig
-		err = json.Unmarshal(result.Value, &pig)
-		if err != nil {
-			return nil, err
-		}
-		assets = append(assets, &pig)
-	}
-	return assets, nil
+	return iterator, nil
 }
