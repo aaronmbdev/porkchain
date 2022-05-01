@@ -36,3 +36,20 @@ func (c *PigContract) EntityExists(ctx contractapi.TransactionContextInterface, 
 	}
 	return data != nil, nil
 }
+
+func (s *PigContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
+	cages := []Cage{
+		Cage{Name: "Cage1"},
+		Cage{Name: "Cage2"},
+		Cage{Name: "Cage3"},
+	}
+
+	for _, cage := range cages {
+		err := s.CreateCage(ctx, cage.Name)
+		if err != nil {
+			return fmt.Errorf("Failed to create cage %s. %s", cage, err.Error())
+		}
+	}
+
+	return nil
+}

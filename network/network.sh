@@ -80,52 +80,29 @@ function createOrgs() {
     rm -Rf organizations/peerOrganizations && rm -Rf organizations/ordererOrganizations
   fi
 
-  which cryptogen
-    if [ "$?" -ne 0 ]; then
-        fatalln "cryptogen tool not found. exiting"
-    fi
-    infoln "Generating certificates using cryptogen tool"
+  infoln "Generating certificates using Fabric CA"
+  ${CONTAINER_CLI_COMPOSE} -f compose/$COMPOSE_FILE_CA -f compose/$CONTAINER_CLI/${CONTAINER_CLI}-$COMPOSE_FILE_CA up -d 2>&1
+
+  . organizations/fabric-ca/registerEnroll.sh
+
+  while :
+    do
+      if [ ! -f "organizations/fabric-ca/farm/tls-cert.pem" ]; then
+        sleep 1
+      else
+        break
+      fi
+    done
 
     infoln "Creating Farm Identities"
+    createOrg1
+    infoln "Creating Org2 Identities"
+    createOrg2
+    infoln "Creating Org3 Identities"
+    createOrg3
+    infoln "Creating Orderer Org Identities"
+    createOrderer
 
-    set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-org1.yaml --output="organizations"
-    res=$?
-    { set +x; } 2>/dev/null
-    if [ $res -ne 0 ]; then
-        fatalln "Failed to generate certificates..."
-    fi
-
-    infoln "Creating Market Identities"
-
-    set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-org3.yaml --output="organizations"
-    res=$?
-    { set +x; } 2>/dev/null
-    if [ $res -ne 0 ]; then
-        fatalln "Failed to generate certificates..."
-    fi
-
-    infoln "Creating Factory Identities"
-
-    set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-org2.yaml --output="organizations"
-    res=$?
-    { set +x; } 2>/dev/null
-    if [ $res -ne 0 ]; then
-        fatalln "Failed to generate certificates..."
-    fi
-
-    infoln "Creating Orderer Identities"
-
-    set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-orderer.yaml --output="organizations"
-    res=$?
-    { set +x; } 2>/dev/null
-    if [ $res -ne 0 ]; then
-        fatalln "Failed to generate certificates..."
-    fi
-  
 
   infoln "Generating CCP files for Farm and Factory"
   ./organizations/ccp-generate.sh

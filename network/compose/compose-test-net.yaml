@@ -121,8 +121,9 @@ services:
       - CORE_PEER_ID=peer0.farm.meatchain.cloud
       - CORE_PEER_ADDRESS=peer0.farm.meatchain.cloud:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.farm.meatchain.cloud:7052
-      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_ADDRESSAUTODETECT=true
+      #- CORE_PEER_CHAINCODEADDRESS=peer0.farm.meatchain.cloud:7052
+      #- CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.farm.meatchain.cloud:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.farm.meatchain.cloud:7051
       - CORE_PEER_LOCALMSPID=FarmMSP
@@ -156,12 +157,12 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variables
+      - CORE_PEER_ADDRESSAUTODETECT=true
       - CORE_PEER_ID=peer0.factory.meatchain.cloud
       - CORE_PEER_ADDRESS=peer0.factory.meatchain.cloud:9051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.factory.meatchain.cloud:9052
-      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      #- CORE_PEER_CHAINCODEADDRESS=peer0.factory.meatchain.cloud:9052
+      #- CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.factory.meatchain.cloud:9051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.factory.meatchain.cloud:9051
       - CORE_PEER_LOCALMSPID=FactoryMSP
@@ -199,8 +200,9 @@ services:
       - CORE_PEER_ID=peer0.market.meatchain.cloud
       - CORE_PEER_ADDRESS=peer0.market.meatchain.cloud:4051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:4051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.market.meatchain.cloud:4052
-      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:4052
+      - CORE_PEER_ADDRESSAUTODETECT=true
+      #- CORE_PEER_CHAINCODEADDRESS=peer0.market.meatchain.cloud:4052
+      #- CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:4052
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.market.meatchain.cloud:4051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.market.meatchain.cloud:4051
       - CORE_PEER_LOCALMSPID=MarketMSP

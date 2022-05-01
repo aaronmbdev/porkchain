@@ -11,13 +11,13 @@ networks:
 
 services:
 
-  ca_org1:
+  ca_farm:
     image: hyperledger/fabric-ca:latest
     labels:
       service: hyperledger-fabric
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-org1
+      - FABRIC_CA_SERVER_CA_NAME=ca-farm
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_PORT=7054
       - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:17054
@@ -26,18 +26,18 @@ services:
       - "17054:17054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ../organizations/fabric-ca/org1:/etc/hyperledger/fabric-ca-server
-    container_name: ca_org1
+      - ../organizations/fabric-ca/farm:/etc/hyperledger/fabric-ca-server
+    container_name: ca_farm
     networks:
       - test
 
-  ca_org2:
+  ca_factory:
     image: hyperledger/fabric-ca:latest
     labels:
       service: hyperledger-fabric
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-org2
+      - FABRIC_CA_SERVER_CA_NAME=ca-factory
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_PORT=8054
       - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:18054
@@ -46,8 +46,29 @@ services:
       - "18054:18054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ../organizations/fabric-ca/org2:/etc/hyperledger/fabric-ca-server
-    container_name: ca_org2
+      - ../organizations/fabric-ca/factory:/etc/hyperledger/fabric-ca-server
+    container_name: ca_factory
+    networks:
+      - test
+
+  
+  ca_market:
+    image: hyperledger/fabric-ca:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-market
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=9054
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:19054
+    ports:
+      - "9054:9054"
+      - "19054:19054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ../organizations/fabric-ca/market:/etc/hyperledger/fabric-ca-server
+    container_name: ca_market
     networks:
       - test
 
@@ -61,14 +82,16 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca-orderer
       - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_PORT=9054
-      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:19054
+      - FABRIC_CA_SERVER_PORT=6054
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:16054
     ports:
-      - "9054:9054"
-      - "19054:19054"
+      - "6054:6054"
+      - "16054:16054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
       - ../organizations/fabric-ca/ordererOrg:/etc/hyperledger/fabric-ca-server
     container_name: ca_orderer
     networks:
       - test
+
+
