@@ -12,7 +12,7 @@ func configureStubPigReading() (*MockContext, *MockStub) {
 	birthdate, _ := date.ParseISO("2021-09-15")
 	testPig := Pig{
 		ParentID:  "",
-		Birthdate: birthdate,
+		Birthdate: birthdate.String(),
 		Breed:     "Iberico",
 		Status:    "Alive",
 		Location:  "ABC1234",

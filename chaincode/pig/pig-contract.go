@@ -57,8 +57,8 @@ func (c *PigContract) UpdatePig(
 		if err != nil {
 			return fmt.Errorf(error_parsing_date, err)
 		}
-		changelog = changelog + " Updated birthdate from " + pig.Birthdate.String() + " to " + birthdate + ". "
-		pig.Birthdate = parsedDate
+		changelog = changelog + " Updated birthdate from " + pig.Birthdate + " to " + birthdate + ". "
+		pig.Birthdate = parsedDate.String()
 	}
 
 	if breed != "" {
@@ -131,7 +131,7 @@ func (c *PigContract) CreatePig(
 
 	pig := Pig{
 		ParentID:  parentId,
-		Birthdate: parsedDate,
+		Birthdate: parsedDate.String(),
 		Breed:     breed,
 		Location:  location,
 		Status:    PigStatus_alive,

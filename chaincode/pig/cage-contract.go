@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
@@ -49,8 +48,8 @@ func (c *PigContract) DeleteCage(ctx contractapi.TransactionContextInterface, id
 	if err != nil {
 		return err
 	}
-	pigsInCage, err := c.GetPigsInCage(ctx, id)
-	if pigsInCage.HasNext() || err != nil {
+	pigsInCage, err := c.PigsInCage(ctx, id)
+	if pigsInCage && err == nil {
 		return fmt.Errorf(error_can_delete_cage, id)
 	}
 	return ctx.GetStub().DelState(id)
@@ -78,16 +77,16 @@ func (c *PigContract) ListCages(ctx contractapi.TransactionContextInterface, sta
 	return assets, nil
 }
 
-func (c *PigContract) GetPigsInCage(ctx contractapi.TransactionContextInterface, cageId string) (shim.StateQueryIteratorInterface, error) {
+func (c *PigContract) PigsInCage(ctx contractapi.TransactionContextInterface, cageId string) (bool, error) {
 	_, err := c.ReadCage(ctx, cageId)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 	queryString := fmt.Sprintf(`{"selector":{"docType":"asset","location":"%s"}}`, cageId)
 	iterator, errAux := ctx.GetStub().GetQueryResult(queryString)
 	if errAux != nil {
-		return nil, errAux
+		return false, errAux
 	}
 	defer iterator.Close()
-	return iterator, nil
+	return iterator.HasNext(), nil
 }

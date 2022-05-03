@@ -14,12 +14,13 @@ func main() {
 	pigContract.Info.Contact = new(metadata.ContactMetadata)
 	pigContract.Info.Contact.Name = "Aaron J. Morales Botton"
 	chaincode, err := contractapi.NewChaincode(pigContract)
-	chaincode.Info.Title = "pig chaincode"
-	chaincode.Info.Version = "0.1.0"
 
 	if err != nil {
 		panic("Could not create chaincode from PigContract." + err.Error())
 	}
+
+	chaincode.Info.Title = "pig chaincode"
+	chaincode.Info.Version = "0.1.0"
 
 	err = chaincode.Start()
 
