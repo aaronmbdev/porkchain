@@ -1,12 +1,8 @@
 package main
 
-import (
-	"github.com/fxtlabs/date"
-)
-
 type Pig struct {
 	ParentID  string    `json:"parentId"`
-	Birthdate date.Date `json:"birthdate"`
+	Birthdate string `json:"birthdate" metadata:"records,optional"`
 	Breed     string    `json:"breed"`
 	Location  string    `json:"location"`
 	Status    string    `json:"status"`
@@ -18,24 +14,24 @@ type Cage struct {
 
 type FeedingRecord struct {
 	PigID string    `json:"pigId"`
-	Date  date.Date `json:"date"`
+	Date  string `json:"date" metadata:"records,optional"`
 	Data  string    `json:"data"`
 }
 
 type HealthRecord struct {
 	PigID string    `json:"pigId"`
-	Date  date.Date `json:"date"`
+	Date  string `json:"date" metadata:"records,optional"`
 	VetID string    `json:"vetId"`
 	Data  string    `json:"data"`
 }
 
 type UpdateRecord struct {
 	PigID string    `json:"pigId"`
-	Date  date.Date `json:"date"`
+	Date  string `json:"date" metadata:"records,optional"`
 	Data  string    `json:"data"`
 }
 
 type Record struct {
-	Date date.Date `json:"date"`
+	Date string `json:"date" metadata:"records,optional"`
 	Data string    `json:"data"`
 }

@@ -26,3 +26,23 @@ network/data
 # Eclipse
 .classpath
 .settings
+
+chaincode/pig
+network/organizations/fabric-ca/factory/IssuerPublicKey
+network/organizations/fabric-ca/factory/IssuerRevocationPublicKey
+network/organizations/fabric-ca/factory/ca-cert.pem
+network/organizations/fabric-ca/factory/fabric-ca-server.db
+network/organizations/fabric-ca/factory/msp/
+network/organizations/fabric-ca/factory/tls-cert.pem
+network/organizations/fabric-ca/farm/IssuerPublicKey
+network/organizations/fabric-ca/farm/IssuerRevocationPublicKey
+network/organizations/fabric-ca/farm/ca-cert.pem
+network/organizations/fabric-ca/farm/msp/
+network/organizations/fabric-ca/farm/tls-cert.pem
+network/organizations/fabric-ca/farm/fabric-ca-server.db
+network/organizations/fabric-ca/market/IssuerPublicKey
+network/organizations/fabric-ca/market/IssuerRevocationPublicKey
+network/organizations/fabric-ca/market/ca-cert.pem
+network/organizations/fabric-ca/market/msp/
+network/organizations/fabric-ca/market/tls-cert.pem
+network/organizations/fabric-ca/market/fabric-ca-server.db
