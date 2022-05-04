@@ -10,6 +10,18 @@ func (c *PigContract) CageExists(ctx contractapi.TransactionContextInterface, ca
 	return c.EntityExists(ctx, cageId)
 }
 
+func (c *PigContract) CreateCageID(ctx contractapi.TransactionContextInterface, name string, id string) error {
+	_, err := c.CageExists(ctx, id)
+	if err != nil {
+		return fmt.Errorf(error_cage_aleady_exists, id)
+	}
+	cage := Cage{
+		Name: name,
+	}
+	cageBytes, _ := json.Marshal(cage)
+	return ctx.GetStub().PutState(id, cageBytes)
+}
+
 func (c *PigContract) CreateCage(ctx contractapi.TransactionContextInterface, name string) error {
 	id, err := c.generateID(ctx)
 	if err != nil {
