@@ -110,7 +110,7 @@ services:
       service: hyperledger-fabric
     environment:
       - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
-      - FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=INFO
       #- FABRIC_LOGGING_SPEC=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_PROFILE_ENABLED=false
@@ -121,9 +121,8 @@ services:
       - CORE_PEER_ID=peer0.farm.meatchain.cloud
       - CORE_PEER_ADDRESS=peer0.farm.meatchain.cloud:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-      - CORE_PEER_ADDRESSAUTODETECT=true
-      #- CORE_PEER_CHAINCODEADDRESS=peer0.farm.meatchain.cloud:7052
-      #- CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.farm.meatchain.cloud:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.farm.meatchain.cloud:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.farm.meatchain.cloud:7051
       - CORE_PEER_LOCALMSPID=FarmMSP
@@ -161,8 +160,8 @@ services:
       - CORE_PEER_ID=peer0.factory.meatchain.cloud
       - CORE_PEER_ADDRESS=peer0.factory.meatchain.cloud:9051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
-      #- CORE_PEER_CHAINCODEADDRESS=peer0.factory.meatchain.cloud:9052
-      #- CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.factory.meatchain.cloud:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.factory.meatchain.cloud:9051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.factory.meatchain.cloud:9051
       - CORE_PEER_LOCALMSPID=FactoryMSP
@@ -200,9 +199,8 @@ services:
       - CORE_PEER_ID=peer0.market.meatchain.cloud
       - CORE_PEER_ADDRESS=peer0.market.meatchain.cloud:4051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:4051
-      - CORE_PEER_ADDRESSAUTODETECT=true
-      #- CORE_PEER_CHAINCODEADDRESS=peer0.market.meatchain.cloud:4052
-      #- CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:4052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.market.meatchain.cloud:4052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:4052
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.market.meatchain.cloud:4051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.market.meatchain.cloud:4051
       - CORE_PEER_LOCALMSPID=MarketMSP
@@ -233,7 +231,7 @@ services:
       - GOPATH=/opt/gopath
       - FABRIC_LOGGING_SPEC=INFO
       - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
-      #- FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=DEBUG
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
     volumes:
