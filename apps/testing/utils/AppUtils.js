@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 
 exports.buildWallet = async (Wallets, walletPath) => {
-    // Create a new  wallet : Note that wallet is for managing identities.
     let wallet;
     if (walletPath) {
         wallet = await Wallets.newFileSystemWallet(walletPath);
