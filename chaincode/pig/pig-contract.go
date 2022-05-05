@@ -75,12 +75,6 @@ func (c *PigContract) UpdatePig(
 		pig.Location = location
 	}
 
-	UpdateRecord := UpdateRecord{
-		Date: date.Today().String(),
-		Data: changelog,
-	}
-	pig.UpdateRecords = append(pig.UpdateRecords, UpdateRecord)
-
 	bytes, _ := json.Marshal(pig)
 	return ctx.GetStub().PutState(pigId, bytes)
 
@@ -95,10 +89,6 @@ func (c *PigContract) SlaughterPig(ctx contractapi.TransactionContextInterface, 
 		return fmt.Errorf(error_pig_slaughtered, pigID)
 	}
 	pig.Status = PigStatus_slaughtered
-	pig.UpdateRecords = append(pig.UpdateRecords, UpdateRecord{
-		Date: date.Today().String(),
-		Data: pig_slaughtered,
-	})
 
 	pigBytes, _ := json.Marshal(pig)
 
@@ -118,7 +108,7 @@ func (c *PigContract) CreatePig(
 		if err != nil {
 			return err
 		}
-		if !exists {
+		if exists {
 			return fmt.Errorf(error_pig_already_exists, id)
 		}
 	} else {
