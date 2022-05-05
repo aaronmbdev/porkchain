@@ -10,4 +10,4 @@ This is the repository of the Meatchain project. A Meat Traceability System base
 
 1. Network: Contains the files to deploy the network
 2. Chaincode: Contains the smart contracts to be deployed
-3. Apps: Contains the three apps of the project. One is for the farm, another one for the meat processing plant and the last one for the supermarket.
+3. Apps: Contains the three apps of the project. One is for the farm, another one for the meat processing plant and the last one for the supermarket. It also contains a testing lib that executes the integration test.
