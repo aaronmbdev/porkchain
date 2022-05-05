@@ -5,6 +5,8 @@ const {createCages} = require("./create_cages_test");
 const {listCages} = require("./list_cages_test");
 const {createPigs} = require("./create_pigs_test");
 const {listPigs} = require("./list_pigs_test");
+const {killPig} = require("./pig_slaugther_test");
+const {deleteCages} = require("./delete_cages_test");
 
 async function main() {
     try {
@@ -17,7 +19,8 @@ async function main() {
             await listCages(contract);
             let pigs = await createPigs(cages, contract);
             await listPigs(contract);
-
+            await killPig(pigs,contract);
+            await deleteCages(cages, contract);
 
         } finally {
             gateway.disconnect();

@@ -7,7 +7,7 @@ async function createCage(contract, name) {
     console.log("Creating cage with ID: " + uuid);
     await contract.submitTransaction('CreateCage', uuid, name);
 
-    let evaluateResponse = await contract.evaluateTransaction("CageExists", uuid);
+    let evaluateResponse = await contract.evaluateTransaction("ReadCage", uuid);
     let processedResponse = prettyJSONString(evaluateResponse.toString());
     if (!processedResponse) {
         console.error(`******** ERROR: The cage ${uuid} was not created`);
