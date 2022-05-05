@@ -24,3 +24,17 @@ exports.prettyJSONString = (inputString) => {
         return inputString;
     }
 }
+
+exports.Logger = class {
+    oldLogger = null;
+
+    enableLogger = () => {
+        window['console']['log'] = this.oldLogger;
+    }
+    disableLogger = () => {
+        if(this.oldLogger == null) {
+            this.oldLogger = console.log;
+        }
+        window['console']['log'] = function() {};
+    }
+}

@@ -36,7 +36,13 @@ To deploy a smart contract you need to first launch the network with a channel.
 Then you can execute the following command.
 
 ```bash
-./network.sh deployCC -ccn NAME -ccp PATH -ccl LANG [-cci initLedger]
+./network.sh deployCC -ccn NAME -ccp PATH -ccl LANG -ccv VERSION -ccs SEQUENCE [-cci initLedger]
+```
+
+To deploy the smart contract of the pig management contract we use the following command
+
+```bash
+./network.sh deployCC -ccn pigManagement -ccp ../chaincode/pig -ccl go -ccv 2.3 -ccs 5 
 ```
 
 Where NAME is the name of the chaincode to be deployed. PATH is where the code is located (only the folder) and LANG is the language that the chaincode is written. It could be either Go, Java or Javascript.
