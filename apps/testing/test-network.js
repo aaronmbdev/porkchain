@@ -2,6 +2,9 @@
 
 const {MeatchainConnection} = require("./network-connection");
 const {createCages} = require("./create_cages_test");
+const {listCages} = require("./list_cages_test");
+const {createPigs} = require("./create_pigs_test");
+const {listPigs} = require("./list_pigs_test");
 
 async function main() {
     try {
@@ -10,11 +13,13 @@ async function main() {
 
         try {
             let contract = await connection.getContract();
-            let cage = await createCages(contract);
+            let cages = await createCages(contract);
+            await listCages(contract);
+            let pigs = await createPigs(cages, contract);
+            await listPigs(contract);
+
 
         } finally {
-            // Disconnect from the gateway when the application is closing
-            // This will close all connections to the network
             gateway.disconnect();
         }
     } catch (error) {
