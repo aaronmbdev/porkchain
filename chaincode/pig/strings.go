@@ -18,4 +18,6 @@ const (
 	error_list_pigs          = "There was an error trying to list the pigs: %s"
 	error_list_cages         = "There was an error trying to list the cages: %s"
 	error_can_delete_cage    = "The cage %s cannot be deleted if there are pigs in it"
+	error_pig_id_required    = "The pigId is required to create a new asset"
+	error_pig_already_exists = "There's already a pig with id %s registered on the chain"
 )

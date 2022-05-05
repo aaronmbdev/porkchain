@@ -75,7 +75,11 @@ func (c *PigContract) UpdatePig(
 		pig.Location = location
 	}
 
-	err = c.createUpdateRecord(ctx, pigId, changelog)
+	UpdateRecord := UpdateRecord{
+		Date: date.Today().String(),
+		Data: changelog,
+	}
+	pig.UpdateRecords = append(pig.UpdateRecords, UpdateRecord)
 
 	bytes, _ := json.Marshal(pig)
 	return ctx.GetStub().PutState(pigId, bytes)
@@ -91,42 +95,56 @@ func (c *PigContract) SlaughterPig(ctx contractapi.TransactionContextInterface, 
 		return fmt.Errorf(error_pig_slaughtered, pigID)
 	}
 	pig.Status = PigStatus_slaughtered
-	pigBytes, _ := json.Marshal(pig)
+	pig.UpdateRecords = append(pig.UpdateRecords, UpdateRecord{
+		Date: date.Today().String(),
+		Data: pig_slaughtered,
+	})
 
-	err = c.createUpdateRecord(ctx, pigID, pig_slaughtered)
-	if err != nil {
-		return err
-	}
+	pigBytes, _ := json.Marshal(pig)
 
 	return ctx.GetStub().PutState(pigID, pigBytes)
 }
 
 func (c *PigContract) CreatePig(
 	ctx contractapi.TransactionContextInterface,
+	id string,
 	parentId string,
 	birthdate string,
 	breed string,
-	location string) (string, error) {
+	location string) error {
+
+	if id != "" {
+		exists, err := c.PigExists(ctx, id)
+		if err != nil {
+			return err
+		}
+		if !exists {
+			return fmt.Errorf(error_pig_already_exists, id)
+		}
+	} else {
+		return fmt.Errorf(error_pig_id_required)
+	}
 
 	if parentId != "" {
 		exists, err := c.PigExists(ctx, parentId)
 		if err != nil {
-			return "", fmt.Errorf(error_state_reading)
-		} else if !exists {
-			return "", fmt.Errorf(error_parent_not_exists, parentId)
+			return err
+		}
+		if !exists {
+			return fmt.Errorf(error_parent_not_exists, parentId)
 		}
 	}
 
 	parsedDate, err := date.ParseISO(birthdate)
 	if err != nil {
-		return "", fmt.Errorf(error_parsing_date, err)
+		return fmt.Errorf(error_parsing_date, err)
 	}
 
 	exists, err := c.CageExists(ctx, location)
 	if err != nil {
-		return "", fmt.Errorf(error_state_reading)
+		return fmt.Errorf(error_state_reading)
 	} else if !exists {
-		return "", fmt.Errorf(error_cage_not_exists, location)
+		return fmt.Errorf(error_cage_not_exists, location)
 	}
 
 	pig := Pig{
@@ -138,12 +156,7 @@ func (c *PigContract) CreatePig(
 	}
 
 	bytes, _ := json.Marshal(pig)
-	id, err := c.generateID(ctx)
-	if err != nil {
-		return "", fmt.Errorf(error_state_reading)
-	}
-	id = "PIG_" + id
-	return id, ctx.GetStub().PutState(id, bytes)
+	return ctx.GetStub().PutState(id, bytes)
 }
 
 func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, start string, end string, bookmark string) ([]*Pig, error) {
@@ -166,79 +179,4 @@ func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, star
 		}
 	}
 	return assets, nil
-}
-
-func (c *PigContract) GetPigRecords(ctx contractapi.TransactionContextInterface, pigId string) ([]Record, error) {
-	queryString := fmt.Sprintf(`{"selector":{"docType":"asset","pigId":"%s"}}`, pigId)
-	iterator, err := ctx.GetStub().GetQueryResult(queryString)
-	if err != nil {
-		return nil, err
-	}
-	var parsed = false
-	var ret []Record
-	for iterator.HasNext() {
-		var record Record
-		response, err := iterator.Next()
-		if err != nil {
-			return nil, err
-		}
-		parsed, record = parseUpdateRecord(response.Value)
-		if parsed {
-			ret = append(ret, record)
-		}
-
-		if !parsed {
-			parsed, record = parseVetRecord(response.Value)
-			if parsed {
-				ret = append(ret, record)
-			}
-		}
-
-		if !parsed {
-			parsed, record = parseFeedRecord(response.Value)
-			if parsed {
-				ret = append(ret, record)
-			}
-		}
-	}
-	return ret, nil
-}
-
-func parseUpdateRecord(value []byte) (bool, Record) {
-	record := new(UpdateRecord)
-	err := json.Unmarshal(value, record)
-	if err != nil {
-		return false, Record{}
-	}
-	ret := Record{
-		Date: record.Date,
-		Data: "Update transaction: " + record.Data,
-	}
-	return true, ret
-}
-
-func parseVetRecord(value []byte) (bool, Record) {
-	record := new(HealthRecord)
-	err := json.Unmarshal(value, record)
-	if err != nil {
-		return false, Record{}
-	}
-	ret := Record{
-		Date: record.Date,
-		Data: "Veterinary information from Vet with ID " + record.VetID + " | " + record.Data,
-	}
-	return true, ret
-}
-
-func parseFeedRecord(value []byte) (bool, Record) {
-	record := new(FeedingRecord)
-	err := json.Unmarshal(value, record)
-	if err != nil {
-		return false, Record{}
-	}
-	ret := Record{
-		Date: record.Date,
-		Data: "Feeding information | " + record.Data,
-	}
-	return true, ret
 }
