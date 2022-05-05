@@ -48,3 +48,5 @@ network/organizations/fabric-ca/market/tls-cert.pem
 network/organizations/fabric-ca/market/fabric-ca-server.db
 
 apps/testing/wallet/*
+
+network/*.tar.gz
