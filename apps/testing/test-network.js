@@ -7,6 +7,7 @@ const {createPigs} = require("./create_pigs_test");
 const {listPigs} = require("./list_pigs_test");
 const {killPig} = require("./pig_slaugther_test");
 const {deleteCages} = require("./delete_cages_test");
+const {updatePigs} = require("./update_pigs_test");
 
 async function main() {
     try {
@@ -20,6 +21,7 @@ async function main() {
             let pigs = await createPigs(cages, contract);
             await listPigs(contract);
             await killPig(pigs,contract);
+            await updatePigs(cages, pigs, contract);
             await deleteCages(cages, contract);
 
         } finally {
