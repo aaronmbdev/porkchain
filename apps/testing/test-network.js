@@ -1,10 +1,7 @@
 'use strict';
 
 const {MeatchainConnection} = require("./network-connection");
-
-function prettyJSONString(inputString) {
-    return JSON.stringify(JSON.parse(inputString), null, 2);
-}
+const {createCages} = require("./create_cages_test");
 
 async function main() {
     try {
@@ -13,27 +10,7 @@ async function main() {
 
         try {
             let contract = await connection.getContract();
-
-            console.log('-----------------------------------------------------------------------------------------');
-            console.log('****** Submitting create cage queries ****** \n\n ');
-
-            /*let queryResponse = await contract.evaluateTransaction('CageExists', 'Cage1');*/
-            let queryResponse = await contract.submitTransaction('CreateCageID', "Cage1", "CAGE_sdasd123");
-            console.log(queryResponse.toJSON());
-            let json = JSON.parse(queryResponse);
-            console.log(json);
-            //console.log(prettyJSONString(queryResponse.toString()));
-
-            /*if (cage != "nil") {
-                console.log("Cage 1 was created successfully");
-            }*/
-
-            /*queryResponse = await contract.v('CreateCage', 'Cage2');
-            cage = queryResponse.toString();
-
-            if (cage != "nil") {
-                console.log("Cage 2 was created successfully");
-            }*/
+            let cage = await createCages(contract);
 
         } finally {
             // Disconnect from the gateway when the application is closing
