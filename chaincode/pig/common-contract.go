@@ -4,8 +4,6 @@ import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
-var letters = []rune(IdGeneratorRune)
-
 type PigContract struct {
 	contractapi.Contract
 }
