@@ -55,7 +55,11 @@ func (c *PigContract) UpdatePig(
 		if err != nil {
 			return err
 		}
-		changelog = changelog + " Updated parent from " + pig.ParentID + " to " + parentId + ". "
+		parent := pig.ParentID
+		if parent == "" {
+			parent = "no parent"
+		}
+		changelog = changelog + " Updated parent from " + parent + " to " + parentId + ". "
 		pig.ParentID = parentId
 	}
 
@@ -83,11 +87,14 @@ func (c *PigContract) UpdatePig(
 	}
 
 	updateRecord := HistoryRecord{
-		Date: date.Today().String(),
-		Data: changelog,
+		AssetType: "record",
+		PigID:     pigId,
+		Date:      date.Today().String(),
+		Data:      changelog,
 	}
 
 	recordBytes, _ := json.Marshal(updateRecord)
+	recordId = "RECORD_" + recordId
 	err = ctx.GetStub().PutState(recordId, recordBytes)
 	if err != nil {
 		return fmt.Errorf(error_could_not_add_registry)
@@ -96,27 +103,6 @@ func (c *PigContract) UpdatePig(
 	bytes, _ := json.Marshal(pig)
 	return ctx.GetStub().PutState(pigId, bytes)
 
-}
-
-func (c *PigContract) GetPigRecords(ctx contractapi.TransactionContextInterface, pigId string) ([]HistoryRecord, error) {
-	queryString := fmt.Sprintf(`{"selector":{"docType":"asset","pigID":"%s"}}`, pigId)
-	iterator, err := ctx.GetStub().GetQueryResult(queryString)
-	if err != nil {
-		return nil, err
-	}
-	var ret []HistoryRecord
-	for iterator.HasNext() {
-		response, err := iterator.Next()
-		if err != nil {
-			return nil, err
-		}
-		record := new(HistoryRecord)
-		err = json.Unmarshal(response.Value, record)
-		if err != nil {
-			ret = append(ret, *record)
-		}
-	}
-	return ret, nil
 }
 
 func (c *PigContract) SlaughterPig(ctx contractapi.TransactionContextInterface, pigID string) error {
@@ -177,6 +163,7 @@ func (c *PigContract) CreatePig(
 	}
 
 	pig := Pig{
+		AssetType: "pig",
 		ParentID:  parentId,
 		Birthdate: parsedDate.String(),
 		Breed:     breed,
@@ -185,6 +172,7 @@ func (c *PigContract) CreatePig(
 	}
 
 	bytes, _ := json.Marshal(pig)
+	id = "PIG_" + id
 	return ctx.GetStub().PutState(id, bytes)
 }
 

@@ -1,6 +1,7 @@
 package main
 
 type Pig struct {
+	AssetType string `json:"assetType"`
 	ParentID  string `json:"parentId"`
 	Birthdate string `json:"birthdate"`
 	Breed     string `json:"breed"`
@@ -9,11 +10,13 @@ type Pig struct {
 }
 
 type Cage struct {
-	Name string `json:"name"`
+	AssetType string `json:"assetType"`
+	Name      string `json:"name"`
 }
 
 type HistoryRecord struct {
-	PigID string `json:"pigID"`
-	Date  string `json:"date"`
-	Data  string `json:"data"`
+	AssetType string `json:"assetType"`
+	PigID     string `json:"pigID"`
+	Date      string `json:"date"`
+	Data      string `json:"data"`
 }

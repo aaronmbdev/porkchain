@@ -16,8 +16,10 @@ func (c *PigContract) CreateCage(ctx contractapi.TransactionContextInterface, id
 		return fmt.Errorf(error_cage_aleady_exists, id)
 	}
 	cage := Cage{
-		Name: name,
+		AssetType: "cage",
+		Name:      name,
 	}
+	id = "CAGE_" + id
 	cageBytes, _ := json.Marshal(cage)
 	return ctx.GetStub().PutState(id, cageBytes)
 }
@@ -81,7 +83,12 @@ func (c *PigContract) PigsInCage(ctx contractapi.TransactionContextInterface, ca
 	if err != nil {
 		return false, err
 	}
-	queryString := fmt.Sprintf(`{"selector":{"docType":"asset","location":"%s"}}`, cageId)
+	queryString := fmt.Sprintf(`{
+	   "selector": {
+		  "assetType": {"$eq": "pig"},
+		  "location": {"$eq": "%s"}
+	   }
+	}`, cageId)
 	iterator, errAux := ctx.GetStub().GetQueryResult(queryString)
 	if errAux != nil {
 		return false, errAux
