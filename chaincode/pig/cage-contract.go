@@ -17,6 +17,7 @@ func (c *PigContract) CreateCage(ctx contractapi.TransactionContextInterface, id
 		return fmt.Errorf(error_cage_aleady_exists, id)
 	}
 	cage := Cage{
+		CageID:    id,
 		AssetType: "cage",
 		Name:      name,
 	}

@@ -11,6 +11,7 @@ type Pig struct {
 }
 
 type Cage struct {
+	CageID    string `json:"cage_id"`
 	AssetType string `json:"assetType"`
 	Name      string `json:"name"`
 }
@@ -21,6 +22,24 @@ type HistoryRecord struct {
 	PigID      string `json:"pigID"`
 	Date       string `json:"date"`
 	Data       string `json:"data"`
+}
+
+type Additive struct {
+	AssetType    string `json:"assetType"`
+	AdditiveID   string `json:"additive_id"`
+	AdditiveType string `json:"additiveType"`
+	Name         string `json:"name"`
+	LotID        string `json:"lot_id"`
+	ExpiryDate   string `json:"expiry_date"`
+}
+
+type Meat struct {
+	AssetType  string `json:"assetType"`
+	MeatID     string `json:"meat_id"`
+	PigID      string `json:"pig_id"`
+	Cut        string `json:"cut"`
+	Pieces     int    `json:"pieces"`
+	Production string `json:"production"`
 }
 
 type PaginatedCageResult struct {
@@ -39,4 +58,16 @@ type PaginatedRecordsResult struct {
 	Records             []*HistoryRecord `json:"records"`
 	FetchedRecordsCount int32            `json:"fetchedRecordsCount"`
 	Bookmark            string           `json:"bookmark"`
+}
+
+type PaginatedAdditiveResult struct {
+	Records             []*Additive `json:"records"`
+	FetchedRecordsCount int32       `json:"fetchedRecordsCount"`
+	Bookmark            string      `json:"bookmark"`
+}
+
+type PaginatedMeatResult struct {
+	Records             []*Meat `json:"records"`
+	FetchedRecordsCount int32   `json:"fetchedRecordsCount"`
+	Bookmark            string  `json:"bookmark"`
 }
