@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fxtlabs/date"
+	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
 func (c *PigContract) PigExists(ctx contractapi.TransactionContextInterface, pigID string) (bool, error) {
-	return c.EntityExists(ctx, pigID)
+	return c._EntityExists(ctx, pigID)
 }
 
 func (c *PigContract) ReadPig(ctx contractapi.TransactionContextInterface, pigID string) (*Pig, error) {
@@ -40,7 +41,7 @@ func (c *PigContract) UpdatePig(
 	location string) error {
 	var changelog string
 
-	assetExists, _ := c.EntityExists(ctx, recordId)
+	assetExists, _ := c._EntityExists(ctx, recordId)
 	if assetExists {
 		return fmt.Errorf(error_record_already_exists, recordId)
 	}
@@ -87,10 +88,11 @@ func (c *PigContract) UpdatePig(
 	}
 
 	updateRecord := HistoryRecord{
-		AssetType: "record",
-		PigID:     pigId,
-		Date:      date.Today().String(),
-		Data:      changelog,
+		RecordType: "update",
+		AssetType:  "record",
+		PigID:      pigId,
+		Date:       date.Today().String(),
+		Data:       changelog,
 	}
 
 	recordBytes, _ := json.Marshal(updateRecord)
@@ -105,7 +107,7 @@ func (c *PigContract) UpdatePig(
 
 }
 
-func (c *PigContract) SlaughterPig(ctx contractapi.TransactionContextInterface, pigID string) error {
+func (c *PigContract) SlaughterPig(ctx contractapi.TransactionContextInterface, pigID string, recordId string) error {
 	pig, err := c.ReadPig(ctx, pigID)
 	if err != nil {
 		return err
@@ -115,8 +117,75 @@ func (c *PigContract) SlaughterPig(ctx contractapi.TransactionContextInterface, 
 	}
 	pig.Status = PigStatus_slaughtered
 
-	pigBytes, _ := json.Marshal(pig)
+	updateRecord := HistoryRecord{
+		RecordType: "update",
+		AssetType:  "record",
+		PigID:      pigID,
+		Date:       date.Today().String(),
+		Data:       fmt.Sprintf(pig_slaughtered, pigID),
+	}
+	recordBytes, _ := json.Marshal(updateRecord)
+	recordId = "RECORD_" + recordId
+	err = ctx.GetStub().PutState(recordId, recordBytes)
+	if err != nil {
+		return fmt.Errorf(error_could_not_add_registry)
+	}
 
+	pigBytes, _ := json.Marshal(pig)
+	return ctx.GetStub().PutState(pigID, pigBytes)
+}
+
+func (c *PigContract) FeedPig(ctx contractapi.TransactionContextInterface, pigID string, food string, recordId string) error {
+	pig, err := c.ReadPig(ctx, pigID)
+	if err != nil {
+		return err
+	}
+	if pig.Status != PigStatus_alive {
+		return fmt.Errorf(error_pig_dead, pigID)
+	}
+
+	updateRecord := HistoryRecord{
+		RecordType: "food",
+		AssetType:  "record",
+		PigID:      pigID,
+		Date:       date.Today().String(),
+		Data:       fmt.Sprintf(pig_fed, pigID, food),
+	}
+	recordBytes, _ := json.Marshal(updateRecord)
+	recordId = "RECORD_" + recordId
+	err = ctx.GetStub().PutState(recordId, recordBytes)
+	if err != nil {
+		return fmt.Errorf(error_could_not_add_registry)
+	}
+
+	pigBytes, _ := json.Marshal(pig)
+	return ctx.GetStub().PutState(pigID, pigBytes)
+}
+
+func (c *PigContract) HealthReview(ctx contractapi.TransactionContextInterface, pigID string, vetId string, data string, recordId string) error {
+	pig, err := c.ReadPig(ctx, pigID)
+	if err != nil {
+		return err
+	}
+	if pig.Status != PigStatus_alive {
+		return fmt.Errorf(error_pig_dead, pigID)
+	}
+
+	updateRecord := HistoryRecord{
+		RecordType: "health",
+		AssetType:  "record",
+		PigID:      pigID,
+		Date:       date.Today().String(),
+		Data:       fmt.Sprintf(pig_reviewed, pigID, vetId, data),
+	}
+	recordBytes, _ := json.Marshal(updateRecord)
+	recordId = "RECORD_" + recordId
+	err = ctx.GetStub().PutState(recordId, recordBytes)
+	if err != nil {
+		return fmt.Errorf(error_could_not_add_registry)
+	}
+
+	pigBytes, _ := json.Marshal(pig)
 	return ctx.GetStub().PutState(pigID, pigBytes)
 }
 
@@ -127,7 +196,7 @@ func (c *PigContract) CreatePig(
 	birthdate string,
 	breed string,
 	location string) error {
-
+	id = "PIG_" + id
 	if id != "" {
 		exists, err := c.PigExists(ctx, id)
 		if err != nil {
@@ -163,6 +232,7 @@ func (c *PigContract) CreatePig(
 	}
 
 	pig := Pig{
+		PigID:     id,
 		AssetType: "pig",
 		ParentID:  parentId,
 		Birthdate: parsedDate.String(),
@@ -172,28 +242,98 @@ func (c *PigContract) CreatePig(
 	}
 
 	bytes, _ := json.Marshal(pig)
-	id = "PIG_" + id
 	return ctx.GetStub().PutState(id, bytes)
 }
 
-func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, start string, end string, bookmark string) ([]*Pig, error) {
-	iterator, _, err := ctx.GetStub().GetStateByRangeWithPagination(start, end, 10, bookmark)
-	if err != nil {
-		return nil, fmt.Errorf(error_list_pigs, err)
-	}
-	defer iterator.Close()
+func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, pageSize int32, bookmark string) (*PaginatedPigResult, error) {
+	queryString := `{
+	   "selector": {
+		  "assetType": {"$eq": "pig"}
+	   }
+	}`
+	return _queryStringPaginatedResponsePig(ctx, queryString, pageSize, bookmark)
+}
 
+func (c *PigContract) GetPigRecords(ctx contractapi.TransactionContextInterface, pigId string, pageSize int32, bookmark string) (*PaginatedRecordsResult, error) {
+	queryString := fmt.Sprintf(`{
+	   "selector": {
+		  "assetType": {"$eq": "record"},
+		"pigID": {"$eq": "%s"}
+	   }
+	}`, pigId)
+	return _queryStringPaginatedResponseRecord(ctx, queryString, pageSize, bookmark)
+}
+
+func _queryStringPaginatedResponsePig(ctx contractapi.TransactionContextInterface, queryString string, pageSize int32, bookmark string) (*PaginatedPigResult, error) {
+	resultsIterator, responseMetadata, err := ctx.GetStub().GetQueryResultWithPagination(queryString, pageSize, bookmark)
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	assets, err := _constructResponseFromIteratorForPigs(resultsIterator)
+	if err != nil {
+		return nil, err
+	}
+
+	return &PaginatedPigResult{
+		Records:             assets,
+		FetchedRecordsCount: responseMetadata.FetchedRecordsCount,
+		Bookmark:            responseMetadata.Bookmark,
+	}, nil
+}
+
+func _queryStringPaginatedResponseRecord(ctx contractapi.TransactionContextInterface, queryString string, pageSize int32, bookmark string) (*PaginatedRecordsResult, error) {
+	resultsIterator, responseMetadata, err := ctx.GetStub().GetQueryResultWithPagination(queryString, pageSize, bookmark)
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	assets, err := _constructResponseFromIteratorForRecords(resultsIterator)
+	if err != nil {
+		return nil, err
+	}
+
+	return &PaginatedRecordsResult{
+		Records:             assets,
+		FetchedRecordsCount: responseMetadata.FetchedRecordsCount,
+		Bookmark:            responseMetadata.Bookmark,
+	}, nil
+}
+
+func _constructResponseFromIteratorForPigs(resultsIterator shim.StateQueryIteratorInterface) ([]*Pig, error) {
 	var assets []*Pig
-	for iterator.HasNext() {
-		response, err := iterator.Next()
+	for resultsIterator.HasNext() {
+		queryResult, err := resultsIterator.Next()
 		if err != nil {
 			return nil, err
 		}
-		var pig Pig
-		err = json.Unmarshal(response.Value, &pig)
-		if err == nil && pig.Status == PigStatus_alive {
-			assets = append(assets, &pig)
+		var asset Pig
+		err = json.Unmarshal(queryResult.Value, &asset)
+		if err != nil {
+			return nil, err
 		}
+		assets = append(assets, &asset)
 	}
+
+	return assets, nil
+}
+
+func _constructResponseFromIteratorForRecords(resultsIterator shim.StateQueryIteratorInterface) ([]*HistoryRecord, error) {
+	var assets []*HistoryRecord
+	for resultsIterator.HasNext() {
+		queryResult, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+		var asset HistoryRecord
+		err = json.Unmarshal(queryResult.Value, &asset)
+		if err != nil {
+			return nil, err
+		}
+		assets = append(assets, &asset)
+	}
+
 	return assets, nil
 }

@@ -18,6 +18,48 @@ networks:
 
 services:
 
+  couchdb0:
+    container_name: couchdb0
+    image: couchdb:3.1.1
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "5984:5984"
+    networks:
+      - test
+
+
+  couchdb1:
+    container_name: couchdb1
+    image: couchdb:3.1.1
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "7984:5984"
+    networks:
+      - test
+
+
+
+  couchdb2:
+    container_name: couchdb2
+    image: couchdb:3.1.1
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "6984:5984"
+    networks:
+      - test
+
   orderer.meatchain.cloud:
     container_name: orderer.meatchain.cloud
     image: hyperledger/fabric-orderer:latest
@@ -131,6 +173,10 @@ services:
       - CORE_METRICS_PROVIDER=prometheus
       - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0farm"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
     volumes:
         - ../organizations/peerOrganizations/farm.meatchain.cloud/peers/peer0.farm.meatchain.cloud:/etc/hyperledger/fabric
         - peer0.farm.meatchain.cloud:/var/hyperledger/production
@@ -141,6 +187,8 @@ services:
       - 9444:9444
     networks:
       - test
+    depends_on:
+      - couchdb0
 
   peer0.factory.meatchain.cloud:
     container_name: peer0.factory.meatchain.cloud
@@ -170,6 +218,10 @@ services:
       - CORE_METRICS_PROVIDER=prometheus
       - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0factory"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
     volumes:
         - ../organizations/peerOrganizations/factory.meatchain.cloud/peers/peer0.factory.meatchain.cloud:/etc/hyperledger/fabric
         - peer0.factory.meatchain.cloud:/var/hyperledger/production
@@ -180,6 +232,8 @@ services:
       - 9445:9445
     networks:
       - test
+    depends_on:
+      - couchdb1
 
   peer0.market.meatchain.cloud:
     container_name: peer0.market.meatchain.cloud
@@ -209,6 +263,10 @@ services:
       - CORE_METRICS_PROVIDER=prometheus
       - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0market"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
     volumes:
         - ../organizations/peerOrganizations/market.meatchain.cloud/peers/peer0.market.meatchain.cloud:/etc/hyperledger/fabric
         - peer0.market.meatchain.cloud:/var/hyperledger/production
@@ -219,6 +277,8 @@ services:
       - 9446:9446
     networks:
       - test
+    depends_on:
+      - couchdb2
 
   cli:
     container_name: cli

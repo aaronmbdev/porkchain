@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
 func (c *PigContract) CageExists(ctx contractapi.TransactionContextInterface, cageId string) (bool, error) {
-	return c.EntityExists(ctx, cageId)
+	return c._EntityExists(ctx, cageId)
 }
 
 func (c *PigContract) CreateCage(ctx contractapi.TransactionContextInterface, id string, name string) error {
@@ -56,26 +57,28 @@ func (c *PigContract) DeleteCage(ctx contractapi.TransactionContextInterface, id
 	return ctx.GetStub().DelState(id)
 }
 
-func (c *PigContract) ListCages(ctx contractapi.TransactionContextInterface, start string, end string, bookmark string) ([]*Cage, error) {
-	iterator, _, err := ctx.GetStub().GetStateByRangeWithPagination(start, end, 10, bookmark)
+func (c *PigContract) ListCages(ctx contractapi.TransactionContextInterface, pageSize int32, bookmark string) (*PaginatedCageResult, error) {
+	queryString := `{
+	   "selector": {
+		  "assetType": {"$eq": "cage"}
+	   }
+	}`
+	resultsIterator, responseMetadata, err := ctx.GetStub().GetQueryResultWithPagination(queryString, pageSize, bookmark)
 	if err != nil {
-		return nil, fmt.Errorf(error_list_cages, err)
+		return nil, err
 	}
-	defer iterator.Close()
+	defer resultsIterator.Close()
 
-	var assets []*Cage
-	for iterator.HasNext() {
-		response, err := iterator.Next()
-		if err != nil {
-			return nil, err
-		}
-		var cage Cage
-		err = json.Unmarshal(response.Value, &cage)
-		if err == nil {
-			assets = append(assets, &cage)
-		}
+	assets, err := _constructResponseFromIteratorForCages(resultsIterator)
+	if err != nil {
+		return nil, err
 	}
-	return assets, nil
+
+	return &PaginatedCageResult{
+		Records:             assets,
+		FetchedRecordsCount: responseMetadata.FetchedRecordsCount,
+		Bookmark:            responseMetadata.Bookmark,
+	}, nil
 }
 
 func (c *PigContract) PigsInCage(ctx contractapi.TransactionContextInterface, cageId string) (bool, error) {
@@ -95,4 +98,46 @@ func (c *PigContract) PigsInCage(ctx contractapi.TransactionContextInterface, ca
 	}
 	defer iterator.Close()
 	return iterator.HasNext(), nil
+}
+
+func (c *PigContract) GetAllPigsInCage(ctx contractapi.TransactionContextInterface, cageId string) ([]*Pig, error) {
+	_, err := c.ReadCage(ctx, cageId)
+	if err != nil {
+		return nil, err
+	}
+	queryString := fmt.Sprintf(`{
+	   "selector": {
+		  "assetType": {"$eq": "pig"},
+          "status": {"$eq": "%s"},
+          "location": {"$eq": "%s"}
+	   }
+	}`, PigStatus_alive, cageId)
+	iterator, err := ctx.GetStub().GetQueryResult(queryString)
+	if err != nil {
+		return nil, err
+	}
+	defer iterator.Close()
+	response, err := _constructResponseFromIteratorForPigs(iterator)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func _constructResponseFromIteratorForCages(resultsIterator shim.StateQueryIteratorInterface) ([]*Cage, error) {
+	var assets []*Cage
+	for resultsIterator.HasNext() {
+		queryResult, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+		var asset Cage
+		err = json.Unmarshal(queryResult.Value, &asset)
+		if err != nil {
+			return nil, err
+		}
+		assets = append(assets, &asset)
+	}
+
+	return assets, nil
 }
