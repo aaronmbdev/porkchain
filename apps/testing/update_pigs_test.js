@@ -21,31 +21,29 @@ async function updatePig(contract, pigId, parentId, birthdate, breed, location) 
 }
 
 async function verifyRecord(contract, pigId) {
-    let records = await contract.evaluateTransaction("GetPigRecords",pigId);
-    console.log("Found the following records: "+ prettyJSONString(records.toString()));
+    console.log("Trying to get the updated asset records with id: " + pigId);
+    let records = await contract.evaluateTransaction("GetPigRecords",pigId, 10, "");
+    let result = records.toString();
+    if (result === "") {
+        throw "No update records were created! Error";
+    }
+    console.log("Found the following records: "+ prettyJSONString(result));
 }
 
 function verifyFields(parent, date, breed, location, newPig) {
-    let verified = true;
     if(parent !== "" && parent !== newPig.parentId) {
-        verified = false;
-        console.error("The parentID is not the expected!");
+        throw "The parentID is not the expected!";
     }
     if(date !== "" && date !== newPig.birthdate) {
-        verified = false;
-        console.error("The birthdate is not the expected!");
+        throw "The birthdate is not the expected!";
     }
     if(breed !== "" && breed !== newPig.breed) {
-        verified = false;
-        console.error("The breed is not the expected!");
+        throw "The breed is not the expected!";
     }
     if(location !== "" && location !== newPig.location) {
-        verified = false;
-        console.error("The location is not the expected!");
+        throw "The location is not the expected!";
     }
-    if(verified) {
-        console.log("The update has been verified successfully. Fields are updated.");
-    }
+    console.log("The update has been verified successfully. Fields are updated.");
 }
 
 exports.updatePigs = async (cages, pigs, contract) => {
@@ -54,7 +52,7 @@ exports.updatePigs = async (cages, pigs, contract) => {
 
     let PigToUpdate = pigs[0];
     let PigToBeParent = pigs[1];
-    let newLocation = cages[cages.length - 1];
+    let newLocation = cages[cages.length - 2];
     let newBirthday = "2019-09-05";
     let newBreed = "Husky";
 

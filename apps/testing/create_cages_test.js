@@ -7,15 +7,15 @@ async function createCage(contract, name) {
     console.log("Creating cage with ID: " + uuid);
     await contract.submitTransaction('CreateCage', uuid, name);
 
+    uuid = "CAGE_" + uuid;
     let evaluateResponse = await contract.evaluateTransaction("ReadCage", uuid);
     let processedResponse = prettyJSONString(evaluateResponse.toString());
     if (!processedResponse) {
-        console.error(`******** ERROR: The cage ${uuid} was not created`);
+        throw "The cage "+uuid +" was not created";
     } else {
         console.log("Cage " + uuid + " created successfully");
         return uuid;
     }
-    return null;
 }
 
 exports.createCages = async (contract) => {
@@ -37,7 +37,7 @@ exports.createCages = async (contract) => {
             logger.disableLogger();
             await contract.submitTransaction("CreateCage",cages[0],"Existing cage");
             logger.enableLogger();
-            console.error(`******** ERROR: The cage was created again, this shouldn't happen`);
+            console.error("The cage was created even though it already existed");
         } catch (e) {
             console.log("Test successful, the existing cage could not be created again.")
         }

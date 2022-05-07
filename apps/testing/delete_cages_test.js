@@ -7,7 +7,7 @@ async function deleteCage(contract, cageId) {
 
 }
 
-exports.deleteCages = async (cages, contract) => {
+exports. deleteCages = async (cages, contract) => {
     console.log('-----------------------------------------------------------------------------------------');
     console.log('****** Delete cages ****** \n\n ');
     let withPigs = cages[0];

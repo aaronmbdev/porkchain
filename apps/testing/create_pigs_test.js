@@ -12,6 +12,7 @@ async function createPigs(contract, parentId, birthdate, breed, location) {
         breed,
         location);
 
+    uuid = "PIG_" + uuid;
     let evaluateResponse = await contract.evaluateTransaction("ReadPig", uuid);
     console.log("Raw response: "+evaluateResponse);
     let processedResponse = prettyJSONString(evaluateResponse.toString());

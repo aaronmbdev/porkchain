@@ -1,10 +1,12 @@
 'use strict';
 
 const {Logger} = require("./utils/AppUtils");
+const {generateID} = require("./utils/IDGenerator");
 
 async function kill(contract, pigId) {
+    let uuid = generateID();
     console.log("Trying to kill "+ pigId);
-    await contract.submitTransaction("SlaughterPig", pigId);
+    await contract.submitTransaction("SlaughterPig", pigId, uuid);
     let testKilled = await contract.evaluateTransaction("ReadPig", pigId);
     return JSON.parse(testKilled.toString());
 }
