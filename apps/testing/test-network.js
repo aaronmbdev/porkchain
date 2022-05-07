@@ -9,6 +9,9 @@ const {killPig} = require("./pig_slaugther_test");
 const {deleteCages} = require("./delete_cages_test");
 const {updatePigs} = require("./update_pigs_test");
 const {feedPigsTest} = require("./feed_pigs_test");
+const {createAdditives} = require("./create_additives_test");
+const {listAdditives} = require("./list_additives_test");
+const {cutMeatAndQuery} = require("./meat_cut_and_query");
 
 async function main() {
     try {
@@ -25,6 +28,14 @@ async function main() {
             await updatePigs(cages, pigs, contract);
             await deleteCages(cages, contract);
             await feedPigsTest(cages,contract);
+
+            console.log('-----------------------------------------------------------------------------------------');
+            console.log('****** First contract fully tested. Starting the second ****** \n\n ');
+
+            let additives = await createAdditives(contract);
+            await listAdditives(contract);
+
+            await cutMeatAndQuery(contract, pigs);
 
         } finally {
             gateway.disconnect();
