@@ -6,6 +6,7 @@ async function cutMeat(contract, pigId, cut, pieces) {
     let uuid = generateID();
     let updateid = generateID();
     await contract.submitTransaction("CutMeat", updateid, uuid, pigId, cut, pieces);
+    return "MEAT_" + uuid;
 }
 
 async function queryCutsAvailable(contract, cuts) {
@@ -20,11 +21,13 @@ exports.cutMeatAndQuery = async (contract, pigs) => {
     let alivePig = pigs[1];
     let cuts = ["Head","Ham","Leg","Belly","Blade"];
     let pieces = [1,2,4,8,16];
+    let cutIds = [];
 
     for(const cut in cuts) {
         let cutS = cuts[cut];
         let piece = pieces[cut];
-        await cutMeat(contract, deadPig, cutS, piece);
+        let res = await cutMeat(contract, deadPig, cutS, piece);
+        cutIds.push(res);
     }
 
     await queryCutsAvailable(contract, "Head");
@@ -41,5 +44,7 @@ exports.cutMeatAndQuery = async (contract, pigs) => {
     } catch (e) {
         console.log("Success! We cannot cut a pig that is still alive");
     }
+
+    return cutIds;
 
 }

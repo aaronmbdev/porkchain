@@ -12,6 +12,7 @@ const {feedPigsTest} = require("./feed_pigs_test");
 const {createAdditives} = require("./create_additives_test");
 const {listAdditives} = require("./list_additives_test");
 const {cutMeatAndQuery} = require("./meat_cut_and_query");
+const {packMeats} = require("./packMeat_test");
 
 async function main() {
     try {
@@ -35,7 +36,8 @@ async function main() {
             let additives = await createAdditives(contract);
             await listAdditives(contract);
 
-            await cutMeatAndQuery(contract, pigs);
+            let cuts = await cutMeatAndQuery(contract, pigs);
+            let trays = await packMeats(contract, cuts, additives);
 
         } finally {
             gateway.disconnect();

@@ -42,6 +42,18 @@ type Meat struct {
 	Production string `json:"production"`
 }
 
+type Tray struct {
+	AssetType string             `json:"assetType"`
+	TrayID    string             `json:"tray_id"`
+	Meats     []MeatQuantityPair `json:"meats"`
+	Additives []string           `json:"additives"`
+}
+
+type MeatQuantityPair struct {
+	MeatID   string `json:"meat_id"`
+	Quantity int    `json:"quantity"`
+}
+
 type PaginatedCageResult struct {
 	Records             []*Cage `json:"records"`
 	FetchedRecordsCount int32   `json:"fetchedRecordsCount"`
