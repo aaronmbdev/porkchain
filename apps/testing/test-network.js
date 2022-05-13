@@ -37,7 +37,7 @@ async function main() {
             await listAdditives(contract);
 
             let cuts = await cutMeatAndQuery(contract, pigs);
-            let trays = await packMeats(contract, cuts, additives);
+            await packMeats(contract, cuts, additives);
 
         } finally {
             gateway.disconnect();
