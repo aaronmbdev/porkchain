@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -c
+    kompose.version: 1.26.1 (a9d05d509)
+    service: hyperledger-fabric
+  creationTimestamp: null
+  labels:
+    io.kompose.service: peer0-farm
+  name: peer0-farm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: peer0-farm
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -c
+        kompose.version: 1.26.1 (a9d05d509)
+        service: hyperledger-fabric
+      creationTimestamp: null
+      labels:
+        io.kompose.network/meatchain-network: "true"
+        io.kompose.service: peer0-farm
+    spec:
+      containers:
+        - args:
+            - peer
+            - node
+            - start
+          env:
+            - name: CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG
+              value: '{"peername":"peer0farm"}'
+            - name: CORE_CHAINCODE_EXECUTETIMEOUT
+              value: 300s
+            - name: CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS
+              value: couchdb0:5984
+            - name: CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+              value: adminpw
+            - name: CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME
+              value: admin
+            - name: CORE_LEDGER_STATE_STATEDATABASE
+              value: CouchDB
+            - name: CORE_METRICS_PROVIDER
+              value: prometheus
+            - name: CORE_OPERATIONS_LISTENADDRESS
+              value: peer0.farm.meatchain.cloud:9444
+            - name: CORE_PEER_ADDRESS
+              value: peer0.farm.meatchain.cloud:7051
+            - name: CORE_PEER_CHAINCODEADDRESS
+              value: peer0.farm.meatchain.cloud:7052
+            - name: CORE_PEER_CHAINCODELISTENADDRESS
+              value: 0.0.0.0:7052
+            - name: CORE_PEER_GOSSIP_BOOTSTRAP
+              value: peer0.farm.meatchain.cloud:7051
+            - name: CORE_PEER_GOSSIP_EXTERNALENDPOINT
+              value: peer0.farm.meatchain.cloud:7051
+            - name: CORE_PEER_ID
+              value: peer0.farm.meatchain.cloud
+            - name: CORE_PEER_LISTENADDRESS
+              value: 0.0.0.0:7051
+            - name: CORE_PEER_LOCALMSPID
+              value: FarmMSP
+            - name: CORE_PEER_MSPCONFIGPATH
+              value: /etc/hyperledger/fabric/msp
+            - name: CORE_PEER_PROFILE_ENABLED
+              value: "false"
+            - name: CORE_PEER_TLS_CERT_FILE
+              value: /etc/hyperledger/fabric/tls/server.crt
+            - name: CORE_PEER_TLS_ENABLED
+              value: "true"
+            - name: CORE_PEER_TLS_KEY_FILE
+              value: /etc/hyperledger/fabric/tls/server.key
+            - name: CORE_PEER_TLS_ROOTCERT_FILE
+              value: /etc/hyperledger/fabric/tls/ca.crt
+            - name: FABRIC_CFG_PATH
+              value: /etc/hyperledger/peercfg
+            - name: FABRIC_LOGGING_SPEC
+              value: INFO
+          image: hyperledger/fabric-peer:2.4
+          name: peer0-farm
+          ports:
+            - containerPort: 7051
+            - containerPort: 9444
+          resources: {}
+          volumeMounts:
+            - mountPath: /etc/hyperledger/peercfg
+              name: peer0-farm-claim0
+            - mountPath: /etc/hyperledger/fabric
+              name: peer0-farm-claim1
+            - mountPath: /var/hyperledger/production
+              name: peer0-farm
+          workingDir: /root
+      restartPolicy: Always
+      volumes:
+        - name: peer0-farm-claim0
+          persistentVolumeClaim:
+            claimName: peer0-farm-claim0
+        - name: peer0-farm-claim1
+          persistentVolumeClaim:
+            claimName: peer0-farm-claim1
+        - name: peer0-farm
+          persistentVolumeClaim:
+            claimName: peer0-farm
+status: {}

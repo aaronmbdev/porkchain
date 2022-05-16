@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -c
+    kompose.version: 1.26.1 (a9d05d509)
+    service: hyperledger-fabric
+  creationTimestamp: null
+  labels:
+    io.kompose.service: orderer2
+  name: orderer2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: orderer2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -c
+        kompose.version: 1.26.1 (a9d05d509)
+        service: hyperledger-fabric
+      creationTimestamp: null
+      labels:
+        io.kompose.network/meatchain-network: "true"
+        io.kompose.service: orderer2
+    spec:
+      containers:
+        - args:
+            - orderer
+          env:
+            - name: FABRIC_LOGGING_SPEC
+              value: INFO
+            - name: ORDERER_ADMIN_LISTENADDRESS
+              value: 0.0.0.0:9053
+            - name: ORDERER_ADMIN_TLS_CERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_ADMIN_TLS_CLIENTROOTCAS
+              value: '[/var/hyperledger/orderer/tls/ca.crt]'
+            - name: ORDERER_ADMIN_TLS_ENABLED
+              value: "true"
+            - name: ORDERER_ADMIN_TLS_PRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+            - name: ORDERER_ADMIN_TLS_ROOTCAS
+              value: '[/var/hyperledger/orderer/tls/ca.crt]'
+            - name: ORDERER_CHANNELPARTICIPATION_ENABLED
+              value: "true"
+            - name: ORDERER_GENERAL_BOOTSTRAPMETHOD
+              value: none
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+            - name: ORDERER_GENERAL_CLUSTER_ROOTCAS
+              value: '[/var/hyperledger/orderer/tls/ca.crt]'
+            - name: ORDERER_GENERAL_LISTENADDRESS
+              value: 0.0.0.0
+            - name: ORDERER_GENERAL_LISTENPORT
+              value: "9050"
+            - name: ORDERER_GENERAL_LOCALMSPDIR
+              value: /var/hyperledger/orderer/msp
+            - name: ORDERER_GENERAL_LOCALMSPID
+              value: OrdererMSP
+            - name: ORDERER_GENERAL_TLS_CERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_GENERAL_TLS_ENABLED
+              value: "true"
+            - name: ORDERER_GENERAL_TLS_PRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+            - name: ORDERER_GENERAL_TLS_ROOTCAS
+              value: '[/var/hyperledger/orderer/tls/ca.crt]'
+            - name: ORDERER_METRICS_PROVIDER
+              value: prometheus
+            - name: ORDERER_OPERATIONS_LISTENADDRESS
+              value: orderer2.meatchain.cloud:9442
+          image: hyperledger/fabric-orderer:2.4
+          name: orderer2
+          ports:
+            - containerPort: 9050
+            - containerPort: 9053
+            - containerPort: 9442
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/hyperledger/orderer/msp
+              name: orderer2-claim0
+            - mountPath: /var/hyperledger/orderer/tls
+              name: orderer2-claim1
+            - mountPath: /var/hyperledger/production/orderer
+              name: orderer2
+          workingDir: /root
+      restartPolicy: Always
+      volumes:
+        - name: orderer2-claim0
+          persistentVolumeClaim:
+            claimName: orderer2-claim0
+        - name: orderer2-claim1
+          persistentVolumeClaim:
+            claimName: orderer2-claim1
+        - name: orderer2
+          persistentVolumeClaim:
+            claimName: orderer2
+status: {}

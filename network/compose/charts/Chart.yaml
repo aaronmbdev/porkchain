@@ -1,0 +1,6 @@
+name: Meatchain
+description: A generated Helm Chart for meatchain
+version: 0.0.1
+apiVersion: v1
+sources:
+home:

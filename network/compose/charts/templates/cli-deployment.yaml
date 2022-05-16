@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -c
+    kompose.version: 1.26.1 (a9d05d509)
+    service: hyperledger-fabric
+  creationTimestamp: null
+  labels:
+    io.kompose.service: cli
+  name: cli
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: cli
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -c
+        kompose.version: 1.26.1 (a9d05d509)
+        service: hyperledger-fabric
+      creationTimestamp: null
+      labels:
+        io.kompose.network/meatchain-network: "true"
+        io.kompose.service: cli
+    spec:
+      containers:
+        - args:
+            - /bin/bash
+          env:
+            - name: FABRIC_CFG_PATH
+              value: /etc/hyperledger/peercfg
+            - name: FABRIC_LOGGING_SPEC
+              value: DEBUG
+            - name: GOPATH
+              value: /opt/gopath
+          image: hyperledger/fabric-tools:2.4
+          name: cli
+          resources: {}
+          stdin: true
+          tty: true
+          volumeMounts:
+            - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+              name: cli-claim0
+            - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+              name: cli-claim1
+          workingDir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+      restartPolicy: Always
+      volumes:
+        - name: cli-claim0
+          persistentVolumeClaim:
+            claimName: cli-claim0
+        - name: cli-claim1
+          persistentVolumeClaim:
+            claimName: cli-claim1
+status: {}
