@@ -1,0 +1,21 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Gateway for Meatchain",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "author": "Aaron J. Morales Botton",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "fabric-ca-client": "^2.2.11",
+    "fabric-network": "^2.2.11",
+    "js-yaml": "^4.1.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
