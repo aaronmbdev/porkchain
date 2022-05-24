@@ -34,6 +34,19 @@ router.get("/:id", async (req, res) => {
     });
 });
 
+router.get("/:id/pigs", async (req, res) => {
+    let id = req.params.id;
+    let contract = await meatchain.getContract();
+    console.log("Getting cage with id: " + id);
+    contract.evaluateTransaction("ReadCage", id).then((response) => {
+        let parsedResponse = JSON.parse(response.toString());
+        res.setHeader('Content-Type', 'application/json');
+        res.send(parsedResponse);
+    }).catch((err) => {
+        res.status(500).send(err.toString());
+    });
+});
+
 router.post("/", async (req, res) => {
     let name = req.body.name;
     let id = generator.generateID();

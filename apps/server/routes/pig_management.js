@@ -60,11 +60,43 @@ router.get("/:id", async (req, res) => {
     });
 });
 
+router.get("/:id/records", async (req, res) => {
+    let contract = await meatchain.getContract();
+    let id = req.params.id;
+    let pageSize = req.query.pageSize || 5;
+    let bookmark = req.query.bookmark || "";
+    contract.evaluateTransaction('GetPigRecords', id, pageSize, bookmark).then((response) => {
+        let parsedResponse = JSON.parse(response.toString());
+        res.setHeader('Content-Type', 'application/json');
+        res.send(parsedResponse);
+    }).catch((err) => {
+        res.status(500).send(err.toString());
+    });
+});
+
 router.post("/:id/kill", async (req, res) => {
     let contract = await meatchain.getContract();
     let id = req.params.id;
     let recordId = generateID();
     contract.submitTransaction('SlaughterPig', id, recordId).then((response) => {
+        res.status(200).send({});
+    }).catch((err) => {
+        res.status(500).send(err.toString());
+    });
+});
+
+router.post("/:id/healthcheck", async (req, res) => {
+    let contract = await meatchain.getContract();
+    let id = req.params.id;
+    let recordId = generateID();
+    let vetId = req.body.vetId;
+    let data = req.body.data;
+    if(vetId === undefined || data === undefined) {
+        res.status(400).send("vetId and data are required");
+        return;
+    }
+
+    contract.submitTransaction('HealthReview', id, vetId, data, recordId).then((response) => {
         res.status(200).send({});
     }).catch((err) => {
         res.status(500).send(err.toString());

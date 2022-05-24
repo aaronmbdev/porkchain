@@ -13,3 +13,5 @@ bin/*
 system-genesis-block/*
 *.tar.gz
 log.txt
+images/*
+

@@ -62,7 +62,7 @@ services:
 
   orderer:
     container_name: orderer
-    image: hyperledger/fabric-orderer:2.4
+    image: aaronmbdev/meatchain-orderer:2.6
     labels:
       service: hyperledger-fabric
     environment:
@@ -70,30 +70,27 @@ services:
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=7050
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      # enabled TLS
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer.meatchain.cloud/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer.meatchain.cloud/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer.meatchain.cloud/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer.meatchain.cloud/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer.meatchain.cloud/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer.meatchain.cloud/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer.meatchain.cloud/tls/ca.crt]
       - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
       - ORDERER_CHANNELPARTICIPATION_ENABLED=true
       - ORDERER_ADMIN_TLS_ENABLED=true
-      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer.meatchain.cloud/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer.meatchain.cloud/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer.meatchain.cloud/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer.meatchain.cloud/tls/ca.crt]
       - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer.meatchain.cloud:9443
+      - ORDERER_OPERATIONS_LISTENADDRESS=localhost:9443
       - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /root
     command: orderer
     volumes:
-        - ../organizations/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/msp:/var/hyperledger/orderer/msp
-        - ../organizations/ordererOrganizations/meatchain.cloud/orderers/orderer.meatchain.cloud/tls/:/var/hyperledger/orderer/tls
         - orderer:/var/hyperledger/production/orderer
     ports:
       - 7050:7050
@@ -105,7 +102,7 @@ services:
 
   orderer2:
     container_name: orderer2
-    image: hyperledger/fabric-orderer:2.4
+    image: aaronmbdev/meatchain-orderer2:2.6
     labels:
       service: hyperledger-fabric
     environment:
@@ -113,30 +110,27 @@ services:
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=9050
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      # enabled TLS
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer.meatchain.cloud/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer.meatchain.cloud/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer.meatchain.cloud/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer.meatchain.cloud/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer.meatchain.cloud/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer.meatchain.cloud/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer.meatchain.cloud/tls/ca.crt]
       - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
       - ORDERER_CHANNELPARTICIPATION_ENABLED=true
       - ORDERER_ADMIN_TLS_ENABLED=true
-      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer.meatchain.cloud/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer.meatchain.cloud/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer.meatchain.cloud/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer.meatchain.cloud/tls/ca.crt]
       - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:9053
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer2.meatchain.cloud:9442
+      - ORDERER_OPERATIONS_LISTENADDRESS=localhost:9442
       - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /root
     command: orderer
     volumes:
-        - ../organizations/ordererOrganizations/meatchain.cloud/orderers/orderer2.meatchain.cloud/msp:/var/hyperledger/orderer/msp
-        - ../organizations/ordererOrganizations/meatchain.cloud/orderers/orderer2.meatchain.cloud/tls/:/var/hyperledger/orderer/tls
         - orderer2:/var/hyperledger/production/orderer
     ports:
       - 9050:9050
@@ -147,19 +141,17 @@ services:
 
   peer0-farm:
     container_name: peer0-farm
-    image: hyperledger/fabric-peer:2.4
+    image: aaronmbdev/meatchain-farmpeer0:2.9
     labels:
       service: hyperledger-fabric
     environment:
       - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
-      - FABRIC_LOGGING_SPEC=INFO
-      #- FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_PROFILE_ENABLED=false
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variables
       - CORE_PEER_ID=peer0.farm.meatchain.cloud
       - CORE_PEER_ADDRESS=peer0.farm.meatchain.cloud:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
@@ -178,8 +170,6 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
     volumes:
-        - ../configtx:/etc/hyperledger/peercfg
-        - ../organizations/peerOrganizations/farm.meatchain.cloud/peers/peer0.farm.meatchain.cloud:/etc/hyperledger/fabric
         - peer0-farm:/var/hyperledger/production
     working_dir: /root
     command: peer node start
@@ -193,13 +183,12 @@ services:
 
   peer0-factory:
     container_name: peer0-factory
-    image: hyperledger/fabric-peer:2.4
+    image: aaronmbdev/meatchain-factorypeer0:2.9
     labels:
       service: hyperledger-fabric
     environment:
       - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
-      - FABRIC_LOGGING_SPEC=INFO
-      #- FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_PROFILE_ENABLED=false
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
@@ -224,8 +213,6 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
     volumes:
-        - ../configtx:/etc/hyperledger/peercfg
-        - ../organizations/peerOrganizations/factory.meatchain.cloud/peers/peer0.factory.meatchain.cloud:/etc/hyperledger/fabric
         - peer0-factory:/var/hyperledger/production
     working_dir: /root
     command: peer node start
@@ -239,7 +226,7 @@ services:
 
   peer0-market:
     container_name: peer0-market
-    image: hyperledger/fabric-peer:2.4
+    image: aaronmbdev/meatchain-marketpeer0:2.9
     labels:
       service: hyperledger-fabric
     environment:
@@ -270,8 +257,6 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
     volumes:
-        - ../configtx:/etc/hyperledger/peercfg
-        - ../organizations/peerOrganizations/market.meatchain.cloud/peers/peer0.market.meatchain.cloud:/etc/hyperledger/fabric
         - peer0-market:/var/hyperledger/production
     working_dir: /root
     command: peer node start
@@ -282,3 +267,4 @@ services:
       - meatchain-network
     depends_on:
       - couchdb2
+
