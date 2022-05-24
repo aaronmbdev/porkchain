@@ -10,7 +10,7 @@ const path = require("path");
 class MeatchainService {
     _walletPath = path.join(process.cwd(), 'wallet');
     _mspOrg1 = 'FarmMSP';
-    _Username = 'farmUser';
+    _Username = 'farmUser3';
     _channelName = 'meatchannel';
     _chaincodeName = 'pigManagement';
     _gateway = null;
@@ -24,7 +24,7 @@ class MeatchainService {
     createMeatchainConnection = async(profile) => {
         console.log("Creating meatchain connection");
         const wallet = await this._buildWallet(Wallets, this._walletPath);
-        let connectionProfile = yaml.load(fs.readFileSync(process.cwd() + "/connection-profile.yaml", "utf-8"));
+        let connectionProfile = yaml.load(fs.readFileSync(process.cwd() + "/" + profile, "utf-8"));
 
         const ca = this._buildFarmCAClient(FabricCAServices, connectionProfile);
         await this._enrollAdmin(ca, wallet, this._mspOrg1, "admin","adminpw");
@@ -50,6 +50,7 @@ class MeatchainService {
         if(this._gateway != null) {
             await this._gateway.connect(this._connectionProfile, connectionOptions);
             const network = await this._gateway.getNetwork(this._channelName);
+            console.log("Contract found, success");
             return network.getContract(this._chaincodeName);
         }
         console.log("Could not obtain the contract, gateway is null")
