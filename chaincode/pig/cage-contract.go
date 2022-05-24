@@ -16,12 +16,12 @@ func (c *PigContract) CreateCage(ctx contractapi.TransactionContextInterface, id
 	if exists || err != nil {
 		return fmt.Errorf(error_cage_aleady_exists, id)
 	}
+	id = "CAGE_" + id
 	cage := Cage{
 		CageID:    id,
 		AssetType: "cage",
 		Name:      name,
 	}
-	id = "CAGE_" + id
 	cageBytes, _ := json.Marshal(cage)
 	return ctx.GetStub().PutState(id, cageBytes)
 }
