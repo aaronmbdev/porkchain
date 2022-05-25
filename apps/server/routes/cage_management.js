@@ -37,8 +37,8 @@ router.get("/:id", async (req, res) => {
 router.get("/:id/pigs", async (req, res) => {
     let id = req.params.id;
     let contract = await meatchain.getContract();
-    console.log("Getting cage with id: " + id);
-    contract.evaluateTransaction("ReadCage", id).then((response) => {
+    console.log("Getting pigs in cage with id: " + id);
+    contract.evaluateTransaction("GetAllPigsInCage", id).then((response) => {
         let parsedResponse = JSON.parse(response.toString());
         res.setHeader('Content-Type', 'application/json');
         res.send(parsedResponse);

@@ -103,6 +103,23 @@ router.post("/:id/healthcheck", async (req, res) => {
     });
 });
 
+router.post("/:id/feed", async (req, res) => {
+    let contract = await meatchain.getContract();
+    let id = req.params.id;
+    let recordId = generateID();
+    let data = req.body.data;
+    if(data === undefined) {
+        res.status(400).send("Food data is required");
+        return;
+    }
+
+    contract.submitTransaction('FeedPig', id, data, recordId).then((response) => {
+        res.status(200).send({});
+    }).catch((err) => {
+        res.status(500).send(err.toString());
+    });
+});
+
 router.put("/:id", async (req, res) => {
     let recordId = generateID();
     let id = req.params.id;
