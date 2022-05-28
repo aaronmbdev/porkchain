@@ -15,6 +15,7 @@
     "fabric-ca-client": "^2.2.11",
     "fabric-network": "^2.2.11",
     "js-yaml": "^4.1.0",
+    "log-timestamp": "^0.3.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

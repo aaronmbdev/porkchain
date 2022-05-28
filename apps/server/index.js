@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const meatchain = require('./service/MeatchainService');
 const utils = require("./utils/AppUtils");
+require('log-timestamp');
+
 
 (async () => {
   await meatchain.createMeatchainConnection(utils.getConnectionProfile());

@@ -6,7 +6,6 @@ const fs = require("fs");
 const FabricCAServices = require("fabric-ca-client");
 const path = require("path");
 
-
 class MeatchainService {
     _walletPath = path.join(process.cwd(), 'wallet');
     _mspOrg1 = 'FarmMSP';
@@ -16,6 +15,8 @@ class MeatchainService {
     _gateway = null;
     _connectionProfile = null;
     _wallet = null;
+    _contractInstance = null;
+
 
     constructor() {
         console.log("Building meatchain service class");
@@ -37,6 +38,14 @@ class MeatchainService {
     }
 
     getContract = async () => {
+        if(this._contractInstance == null) {
+            console.log("Creating contract instance");
+            this._contractInstance = await this._produceAndSaveContract();
+        }
+        return this._contractInstance;
+    }
+
+    _produceAndSaveContract = async() => {
         let connectionOptions =  {
             identity: this._Username,
             wallet: this._wallet,
@@ -46,7 +55,6 @@ class MeatchainService {
             }
         };
 
-        console.log("Trying to obtain the contract");
         if(this._gateway != null) {
             await this._gateway.connect(this._connectionProfile, connectionOptions);
             const network = await this._gateway.getNetwork(this._channelName);
@@ -147,4 +155,5 @@ class MeatchainService {
 
 }
 
-module.exports = new MeatchainService();
+const service = new MeatchainService();
+module.exports = service;

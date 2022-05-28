@@ -13,10 +13,12 @@ router.get("/", async (req, res) => {
 
     contract.evaluateTransaction("ListCages", pageSize, bookmark).then((response) => {
         let parsedResponse = JSON.parse(response.toString());
+        console.log("ListCages response: " + parsedResponse);
         res.setHeader('Content-Type', 'application/json');
         res.send(parsedResponse);
     }).catch((err) => {
-        res.status(500).send(err);
+        console.log("ListCages error: " + err);
+        res.status(500).send(err.toString());
     });
 
 });
@@ -36,9 +38,14 @@ router.get("/:id", async (req, res) => {
 
 router.get("/:id/pigs", async (req, res) => {
     let id = req.params.id;
+    let pageSize = req.query.pageSize;
+    let bookmark = req.query.bookmark;
+    if (pageSize === undefined) pageSize = 5;
+    if (bookmark === undefined) bookmark = "";
+
     let contract = await meatchain.getContract();
     console.log("Getting pigs in cage with id: " + id);
-    contract.evaluateTransaction("GetAllPigsInCage", id).then((response) => {
+    contract.evaluateTransaction("GetAllPigsInCage", id, pageSize, bookmark).then((response) => {
         let parsedResponse = JSON.parse(response.toString());
         res.setHeader('Content-Type', 'application/json');
         res.send(parsedResponse);
