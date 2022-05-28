@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.27.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.1",
+    "react-toastify": "^9.0.1",
     "uuid": "^8.3.2"
   },
   "scripts": {
@@ -15,7 +17,13 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "browser": { "fs": false, "path": false, "os": false, "net": false, "tls": false },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false,
+    "net": false,
+    "tls": false
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

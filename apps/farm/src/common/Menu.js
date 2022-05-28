@@ -3,6 +3,8 @@ import React from 'react';
 export default class Menu extends React.Component {
     render() {
         const no_link = "#";
+        const overview = "/";
+        const cage_overview = "/cages";
         return (
             <div className="vertical-menu">
 
@@ -12,14 +14,13 @@ export default class Menu extends React.Component {
                         <ul className="metismenu list-unstyled" id="side-menu">
                             <li className="menu-title">Menu</li>
                             <li>
-                                <a href={no_link} className="waves-effect">
-                                    <i className="mdi mdi-view-dashboard"></i><span className="badge badge-pill badge-success float-right">3</span>
+                                <a href={overview} className="waves-effect">
                                     <span>Farm overview</span>
                                 </a>
                             </li>
                             <li className="menu-title">Cage Management</li>
                             <li>
-                                <a href={no_link} className=" waves-effect">
+                                <a href={cage_overview} className=" waves-effect">
                                     <i className="mdi mdi-calendar-month"></i>
                                     <span>Cages overview</span>
                                 </a>

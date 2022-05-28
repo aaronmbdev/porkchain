@@ -1,12 +1,18 @@
-import localProfile from "../connection-profile-local.yaml";
-import devProfile from "../connection-profile.yaml";
+
 
 export default class Utils {
 
-    static getConnectionProfile() {
+    static getAPIEndpoint() {
         if(process.env.NODE_ENV === "development") {
-            return localProfile;
+            return "http://localhost:4000";
         }
-        return devProfile;
+        return "https://api.meatchain.cloud";
+    }
+
+    static processResponseFromAPI(response) {
+        return {
+            success: response.status !== 500,
+            data: response.data
+        };
     }
 }
