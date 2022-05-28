@@ -55,31 +55,31 @@ type MeatQuantityPair struct {
 }
 
 type PaginatedCageResult struct {
-	Records             []*Cage `json:"records"`
+	Records             []*Cage `json:"records,omitempty" metadata:"records,optional" `
 	FetchedRecordsCount int32   `json:"fetchedRecordsCount"`
 	Bookmark            string  `json:"bookmark"`
 }
 
 type PaginatedPigResult struct {
-	Records             []*Pig `json:"records"`
+	Records             []*Pig `json:"records,omitempty" metadata:"records,optional" `
 	FetchedRecordsCount int32  `json:"fetchedRecordsCount"`
 	Bookmark            string `json:"bookmark"`
 }
 
 type PaginatedRecordsResult struct {
-	Records             []*HistoryRecord `json:"records"`
+	Records             []*HistoryRecord `json:"records,omitempty" metadata:"records,optional" `
 	FetchedRecordsCount int32            `json:"fetchedRecordsCount"`
 	Bookmark            string           `json:"bookmark"`
 }
 
 type PaginatedAdditiveResult struct {
-	Records             []*Additive `json:"records"`
+	Records             []*Additive `json:"records,omitempty" metadata:"records,optional" `
 	FetchedRecordsCount int32       `json:"fetchedRecordsCount"`
 	Bookmark            string      `json:"bookmark"`
 }
 
 type PaginatedMeatResult struct {
-	Records             []*Meat `json:"records"`
+	Records             []*Meat `json:"records,omitempty" metadata:"records,optional" `
 	FetchedRecordsCount int32   `json:"fetchedRecordsCount"`
 	Bookmark            string  `json:"bookmark"`
 }

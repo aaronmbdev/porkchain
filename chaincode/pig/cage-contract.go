@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
@@ -59,6 +58,7 @@ func (c *PigContract) DeleteCage(ctx contractapi.TransactionContextInterface, id
 }
 
 func (c *PigContract) ListCages(ctx contractapi.TransactionContextInterface, pageSize int32, bookmark string) (*PaginatedCageResult, error) {
+	var assets []*Cage
 	queryString := `{
 	   "selector": {
 		  "assetType": {"$eq": "cage"}
@@ -70,9 +70,17 @@ func (c *PigContract) ListCages(ctx contractapi.TransactionContextInterface, pag
 	}
 	defer resultsIterator.Close()
 
-	assets, err := _constructResponseFromIteratorForCages(resultsIterator)
-	if err != nil {
-		return nil, err
+	for resultsIterator.HasNext() {
+		queryResult, err2 := resultsIterator.Next()
+		if err2 != nil {
+			return nil, err2
+		}
+		var asset Cage
+		err2 = json.Unmarshal(queryResult.Value, &asset)
+		if err2 != nil {
+			return nil, err2
+		}
+		assets = append(assets, &asset)
 	}
 
 	return &PaginatedCageResult{
@@ -90,9 +98,10 @@ func (c *PigContract) PigsInCage(ctx contractapi.TransactionContextInterface, ca
 	queryString := fmt.Sprintf(`{
 	   "selector": {
 		  "assetType": {"$eq": "pig"},
+          "status": {"$eq": "%s"},
 		  "location": {"$eq": "%s"}
 	   }
-	}`, cageId)
+	}`, PigStatus_alive, cageId)
 	iterator, errAux := ctx.GetStub().GetQueryResult(queryString)
 	if errAux != nil {
 		return false, errAux
@@ -101,7 +110,8 @@ func (c *PigContract) PigsInCage(ctx contractapi.TransactionContextInterface, ca
 	return iterator.HasNext(), nil
 }
 
-func (c *PigContract) GetAllPigsInCage(ctx contractapi.TransactionContextInterface, cageId string) ([]*Pig, error) {
+func (c *PigContract) GetAllPigsInCage(ctx contractapi.TransactionContextInterface, cageId string, pageSize int32, bookmark string) (*PaginatedPigResult, error) {
+	var assets []*Pig
 	_, err := c.ReadCage(ctx, cageId)
 	if err != nil {
 		return nil, err
@@ -113,32 +123,27 @@ func (c *PigContract) GetAllPigsInCage(ctx contractapi.TransactionContextInterfa
           "location": {"$eq": "%s"}
 	   }
 	}`, PigStatus_alive, cageId)
-	iterator, err := ctx.GetStub().GetQueryResult(queryString)
+	resultsIterator, responseMetadata, err := ctx.GetStub().GetQueryResultWithPagination(queryString, pageSize, bookmark)
 	if err != nil {
 		return nil, err
 	}
-	defer iterator.Close()
-	response, err := _constructResponseFromIteratorForPigs(iterator)
-	if err != nil {
-		return nil, err
-	}
-	return response, nil
-}
 
-func _constructResponseFromIteratorForCages(resultsIterator shim.StateQueryIteratorInterface) ([]*Cage, error) {
-	var assets []*Cage
 	for resultsIterator.HasNext() {
-		queryResult, err := resultsIterator.Next()
-		if err != nil {
-			return nil, err
+		queryResult, err2 := resultsIterator.Next()
+		if err2 != nil {
+			return nil, err2
 		}
-		var asset Cage
-		err = json.Unmarshal(queryResult.Value, &asset)
-		if err != nil {
-			return nil, err
+		var asset Pig
+		err2 = json.Unmarshal(queryResult.Value, &asset)
+		if err2 != nil {
+			return nil, err2
 		}
 		assets = append(assets, &asset)
 	}
 
-	return assets, nil
+	return &PaginatedPigResult{
+		Records:             assets,
+		FetchedRecordsCount: responseMetadata.FetchedRecordsCount,
+		Bookmark:            responseMetadata.Bookmark,
+	}, nil
 }
