@@ -7,6 +7,8 @@ import CageOverview from "./pages/cages_overview";
 import React from "react";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import PigsInCage from "./pages/pigsInCage";
+import PigProfile from "./pages/pigProfile";
 
 export default class App extends React.Component {
 
@@ -20,6 +22,8 @@ export default class App extends React.Component {
                     <Routes>
                         <Route path="/" element={<Overview />} />
                         <Route path="/cages" element={<CageOverview />} />
+                        <Route path="/cages/:id" element={<PigsInCage />} />
+                        <Route path="/pigs/:id" element={<PigProfile />} />
                     </Routes>
                     <Footer />
                 </div>

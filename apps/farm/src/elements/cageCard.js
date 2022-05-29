@@ -5,7 +5,7 @@ import Utils from "../utils/utils";
 import Toast from "../utils/toast";
 
 
-export default class Cage extends React.Component {
+export default class CageCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,7 +18,7 @@ export default class Cage extends React.Component {
     componentDidMount() {
         let  {id} = this.state;
         let meatchain = new MeatchainService();
-        meatchain.getPigsInCage(id).then(response => {
+        meatchain.getPigsInCage(id, 5, "").then(response => {
             let processed = Utils.processResponseFromAPI(response);
             if(processed.success) {
                 let info = processed.data;
@@ -51,6 +51,7 @@ export default class Cage extends React.Component {
         if(!canErase || isDeleting) disabled = true;
         let DeleteText = "Delete";
         if(isDeleting) DeleteText = "Deleting...";
+        if(!canErase) DeleteText = "Cannot delete";
         return (
             <div className="col-md-6 col-xl-3">
                 <div className="card">
@@ -64,7 +65,9 @@ export default class Cage extends React.Component {
                         </div>
                         <div className={"row"}>
                             <div className={"col-md-6"}>
-                                <button type="button" className="btn btn-primary waves-effect waves-light">See pigs</button>
+                                <button type="button" className="btn btn-primary waves-effect waves-light" onClick={() => {
+                                    window.location.href = "/cages/" + id;
+                                }}>See pigs</button>
                             </div>
                             <div className={"col-md-6"}>
                                 <button type="button" className="btn btn-danger waves-effect waves-light" disabled={disabled} onClick={() => this.deleteCage()}>{DeleteText}</button>

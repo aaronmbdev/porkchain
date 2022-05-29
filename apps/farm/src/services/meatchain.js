@@ -13,8 +13,8 @@ export default class MeatchainService {
         return axios.get(`${this._url}/cage/?pageSize=${pageSize}&bookmark=${bookmark}`);
     }
 
-    async getPigsInCage(id) {
-        return axios.get(`${this._url}/cage/${id}/pigs`);
+    async getPigsInCage(id, pageSize, bookmark) {
+        return axios.get(`${this._url}/cage/${id}/pigs/?pageSize=${pageSize}&bookmark=${bookmark}`);
     }
 
     async createCage(name) {
@@ -23,5 +23,13 @@ export default class MeatchainService {
 
     async deleteCage(id) {
         return axios.delete(`${this._url}/cage/${id}`);
+    }
+
+    async readPig(id) {
+        return axios.get(`${this._url}/pig/${id}`);
+    }
+
+    async readPigHistory(id) {
+        return axios.get(`${this._url}/pig/${id}/records`);
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import Cage from "../elements/cage";
+import CageCard from "../elements/cageCard";
 import MeatchainService from "../services/meatchain";
 import Utils from "../utils/utils";
 import Toast from "../utils/toast";
@@ -54,7 +54,7 @@ export default class CageOverview extends React.Component {
         let i = 0;
         forEach(cages, (cage) => {
             i = i + 1;
-            cagesRender.push(<Cage key={i} id={cage.cage_id} name={cage.name}/>);
+            cagesRender.push(<CageCard key={i} id={cage.cage_id} name={cage.name}/>);
         });
         let moreRender = (<button type="button" className="btn btn-primary waves-effect waves-light" onClick={() => this.loadMoreCages()}>Load more</button>);
 

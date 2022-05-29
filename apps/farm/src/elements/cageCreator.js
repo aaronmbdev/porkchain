@@ -1,5 +1,6 @@
 import React from "react";
 import MeatchainService from "../services/meatchain";
+import Toast from "../utils/toast";
 
 export default class CageCreator extends React.Component {
     constructor(props) {
@@ -22,7 +23,7 @@ export default class CageCreator extends React.Component {
             });
             let meatchain = new MeatchainService();
             meatchain.createCage(value).then(() => {
-                console.log("Cage created");
+                Toast.success("Cage created", "Success");
                 this.setState({
                    createValue: "",
                     disabled: false
