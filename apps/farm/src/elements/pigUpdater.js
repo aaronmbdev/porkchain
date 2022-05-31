@@ -1,16 +1,24 @@
 import React from "react";
+import PigSelector from "./pigSelector";
+import Swal from 'sweetalert2'
+import CageSelector from "./cageSelector";
+import MeatchainService from "../services/meatchain";
+import Toast from "../utils/toast";
 
 export default class PigUpdater extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            parentId: props.parentId,
+            parentId: props.parent,
             birthdate: props.birthdate,
             breed: props.breed,
             location: props.location,
-            parentPigs: [{ value: props.parentId, label: props.parentId }],
+            id: props.id,
         }
+        this.updateCage = this.updateCage.bind(this);
+        this.updateParent = this.updateParent.bind(this);
     }
+
     updateBreed(event) {
         this.setState({
             breed: event.target.value
@@ -21,10 +29,49 @@ export default class PigUpdater extends React.Component {
             birthdate: event.target.value
         });
     }
-    updateParent(event) {
+    updateParent(value) {
         this.setState({
-            parentId: event.target.value
+            parentId: value
         });
+    }
+    updateCage(value) {
+        this.setState({
+            location: value
+        });
+    }
+    updateInformation() {
+        let {breed, birthdate, parentId, location, id} = this.state;
+        let meatchain = new MeatchainService();
+        Swal.fire({
+            title: 'Do you want to save the changes?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Save',
+            denyButtonText: `Don't save`,
+            confirmButtonColor: '#3d8ef8',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Saving...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    showConfirmButton: false,
+                    onOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                meatchain.updatePig(id, parentId, birthdate, breed, location).then(() => {
+                    window.location.reload();
+                }).catch(err => {
+                    Toast.error(err.toString()
+                    );
+                    Swal.hideLoading();
+                });
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+        })
     }
     render() {
         return (
@@ -52,8 +99,16 @@ export default class PigUpdater extends React.Component {
                                 </div>
                                 <div className="form-group row">
                                     <label htmlFor="parent" className="col-md-2 col-form-label">Parent Pig</label>
-                                    <div className="col-md-10">
-
+                                    <PigSelector selected={this.state.parentId} parentCallback={this.updateParent} />
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="parent" className="col-md-2 col-form-label">Location</label>
+                                    <CageSelector selected={this.state.location} parentCallback={this.updateCage} />
+                                </div>
+                                <div className="form-group row">
+                                    <div className="col-md-12">
+                                        <button type="button" className="btn btn-primary waves-effect waves-light" onClick={() => this.updateInformation()}>Update information
+                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -359,7 +359,7 @@ body[data-layout="horizontal"] .footer {
 
 .main-content {
   margin-left: 250px;
-  overflow: hidden; }
+  }
   .main-content .content {
     padding: 0 15px 10px 15px;
     margin-top: 70px; }

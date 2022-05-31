@@ -2,9 +2,13 @@ import React from "react";
 import {Link, useParams} from "react-router-dom";
 import MeatchainService from "../services/meatchain";
 import Utils from "../utils/utils";
-import pig_image from "../images/elements/pig.png";
 import Toast from "../utils/toast";
 import PigUpdater from "../elements/pigUpdater";
+import PigInformation from "../elements/pigInformation";
+import PigSlauther from "../elements/pigSlauther";
+import HealthcheckForm from "../elements/healthcheckForm";
+import FeedPigForm from "../elements/feedPigForm";
+import PigRecords from "../elements/pigRecords";
 
 class PigProfile extends React.Component {
     constructor(props) {
@@ -36,20 +40,6 @@ class PigProfile extends React.Component {
         }).catch((err) => {
             Toast.error(err.toString());
         });
-        this.updateHistoryRecords();
-    }
-
-    updateHistoryRecords() {
-        let meatchain = new MeatchainService();
-        let {id} = this.state;
-        meatchain.readPigHistory(id).then(response => {
-            let processed = Utils.processResponseFromAPI(response);
-            this.setState({
-               records: processed.data
-            });
-        }).catch((err) => {
-            Toast.error(err.toString());
-        });
     }
 
     buildStatusElem(status) {
@@ -73,6 +63,17 @@ class PigProfile extends React.Component {
         const locationElem = this.buildIdTagElem("cages", location);
         const parentElem = this.buildIdTagElem("pigs", parentId);
         const no_link = "#";
+        if(breed === "...") {
+            return(
+                <div className="page-content">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <p>Content loading...</p>
+                        </div>
+                    </div>
+                </div>
+                );
+        }
         return (
             <div className="page-content">
                 <div className="container-fluid">
@@ -94,43 +95,40 @@ class PigProfile extends React.Component {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-6">
+                        <div className="col-12">
                             <div className="card">
                                 <div className="card-body">
                                     <div className="page-title-box d-flex align-items-center justify-content-between">
-                                        <h4 className="mb-0 font-size-18">Pigs {id}</h4>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <img className="rounded-circle" alt="200x200"
-                                                 src={pig_image} data-holder-rendered="true" />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <p>Birthdate: {birthdate}</p>
-                                            <p>Breed: {breed}</p>
-                                            <p>Location: {locationElem}</p>
-                                            <p>Parent: {parentElem}</p>
-                                            <p>Status: {statusElem}</p>
+                                        <div className="btn-group btn-group-toggle" data-toggle="buttons">
+                                            <a href={"/pigs"}><label className="btn btn-secondary">
+                                                <i className="mdi mdi-backspace"/> Go back
+                                            </label></a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <PigUpdater parent={parentId} breed={breed} birthdate={birthdate} location={location}/>
+                    </div>
+                    <div className="row">
+                        <div className="col-6">
+                            <PigInformation id={id} birthdate={birthdate} breed={breed} status={statusElem} location={locationElem} parent={parentElem}/>
+                        </div>
+                        <PigUpdater parent={parentId} breed={breed} birthdate={birthdate} location={location} id={id}/>
+                    </div>
+                    <div className="row">
+                        <div className="col-4">
+                            <PigSlauther id={id} status={status}/>
+                        </div>
+                        <div className="col-4">
+                            <HealthcheckForm id={id} status={status}/>
+                        </div>
+                        <div className="col-4">
+                            <FeedPigForm id={id} status={status} />
+                        </div>
                     </div>
                     <div className="row">
                         <div className="col-12">
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="page-title-box d-flex align-items-center justify-content-between">
-                                        <h4 className="mb-0 font-size-18">Pig history</h4>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <PigRecords id={id}/>
                         </div>
                     </div>
                 </div>

@@ -1,8 +1,5 @@
 import React from 'react';
-import logo_sm_dark from '../images/logo-sm-dark.png';
-import logo_dark from '../images/logo-dark.png';
-import logo_sm_light from '../images/logo-sm-light.png';
-import logo_light from '../images/logo-light.png';
+import logo from "../images/logo.png";
 import user from '../images/users/avatar-1.jpg';
 
 export default class Header extends React.Component {
@@ -15,19 +12,19 @@ export default class Header extends React.Component {
                         <div className="navbar-brand-box">
                             <a href={no_link} className="logo logo-dark">
                                 <span className="logo-sm">
-                                    <img src={logo_sm_dark} alt="" height="22"/>
+                                    <img src={logo} alt="" height="50"/>
                                 </span>
                                 <span className="logo-lg">
-                                    <img src={logo_dark} alt="" height="20"/>
+                                    <img src={logo} alt="" height="50"/>
                                 </span>
                             </a>
 
                             <a href={no_link}  className="logo logo-light">
                                 <span className="logo-sm">
-                                    <img src={logo_sm_light} alt="" height="22"/>
+                                    <img src={logo} alt="" height="50"/>
                                 </span>
                                 <span className="logo-lg">
-                                    <img src={logo_light} alt="" height="20"/>
+                                    <img src={logo} alt="" height="50"/>
                                 </span>
                             </a>
                         </div>

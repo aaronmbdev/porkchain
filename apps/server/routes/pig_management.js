@@ -29,7 +29,9 @@ router.post("/", async (req, res) => {
         req.body.birthdate,
         req.body.breed,
         req.body.location).then((response) => {
-            res.status(200).send({});
+            let parsedResponse = JSON.parse(response.toString());
+            res.setHeader('Content-Type', 'application/json');
+            res.send(parsedResponse);
         }).catch((err) => {
             res.status(500).send(err.toString());
         });
