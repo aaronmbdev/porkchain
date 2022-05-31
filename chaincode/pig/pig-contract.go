@@ -195,40 +195,40 @@ func (c *PigContract) CreatePig(
 	parentId string,
 	birthdate string,
 	breed string,
-	location string) error {
+	location string) (string, error) {
 	id = "PIG_" + id
 	if id != "" {
 		exists, err := c.PigExists(ctx, id)
 		if err != nil {
-			return err
+			return "", err
 		}
 		if exists {
-			return fmt.Errorf(error_pig_already_exists, id)
+			return "", fmt.Errorf(error_pig_already_exists, id)
 		}
 	} else {
-		return fmt.Errorf(error_pig_id_required)
+		return "", fmt.Errorf(error_pig_id_required)
 	}
 
 	if parentId != "" {
 		exists, err := c.PigExists(ctx, parentId)
 		if err != nil {
-			return err
+			return "", err
 		}
 		if !exists {
-			return fmt.Errorf(error_parent_not_exists, parentId)
+			return "", fmt.Errorf(error_parent_not_exists, parentId)
 		}
 	}
 
 	parsedDate, err := date.ParseISO(birthdate)
 	if err != nil {
-		return fmt.Errorf(error_parsing_date, err)
+		return "", fmt.Errorf(error_parsing_date, err)
 	}
 
 	exists, err := c.CageExists(ctx, location)
 	if err != nil {
-		return fmt.Errorf(error_state_reading)
+		return "", fmt.Errorf(error_state_reading)
 	} else if !exists {
-		return fmt.Errorf(error_cage_not_exists, location)
+		return "", fmt.Errorf(error_cage_not_exists, location)
 	}
 
 	pig := Pig{
@@ -242,7 +242,7 @@ func (c *PigContract) CreatePig(
 	}
 
 	bytes, _ := json.Marshal(pig)
-	return ctx.GetStub().PutState(id, bytes)
+	return id, ctx.GetStub().PutState(id, bytes)
 }
 
 func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, pageSize int32, bookmark string) (*PaginatedPigResult, error) {
