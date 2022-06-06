@@ -4,16 +4,17 @@ const meatchain = require('../service/MeatchainService');
 const generator = require("../utils/IDGenerator");
 
 router.get("/", async (req, res) => {
+    console.log("Requesting list of cages");
     let pageSize = req.query.pageSize;
     let bookmark = req.query.bookmark;
     if (pageSize === undefined) pageSize = 5;
     if (bookmark === undefined) bookmark = "";
 
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
 
     contract.evaluateTransaction("ListCages", pageSize, bookmark).then((response) => {
         let parsedResponse = JSON.parse(response.toString());
-        console.log("ListCages response: " + parsedResponse);
+        console.log("ListCages response: " + response.toString());
         res.setHeader('Content-Type', 'application/json');
         res.send(parsedResponse);
     }).catch((err) => {
@@ -25,7 +26,8 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     let id = req.params.id;
-    let contract = await meatchain.getContract();
+    console.log("Requesting information for cage with id " + id);
+    let contract = await meatchain.getFarmContract();
     console.log("Getting cage with id: " + id);
     contract.evaluateTransaction("ReadCage", id).then((response) => {
         let parsedResponse = JSON.parse(response.toString());
@@ -38,12 +40,13 @@ router.get("/:id", async (req, res) => {
 
 router.get("/:id/pigs", async (req, res) => {
     let id = req.params.id;
+    console.log("Requesting pigs in cage with id "+ id);
     let pageSize = req.query.pageSize;
     let bookmark = req.query.bookmark;
     if (pageSize === undefined) pageSize = 5;
     if (bookmark === undefined) bookmark = "";
 
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
     console.log("Getting pigs in cage with id: " + id);
     contract.evaluateTransaction("GetAllPigsInCage", id, pageSize, bookmark).then((response) => {
         let parsedResponse = JSON.parse(response.toString());
@@ -62,7 +65,7 @@ router.post("/", async (req, res) => {
         return;
     }
     console.log("Creating cage with name: "+name+" and id: " + id);
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
     contract.submitTransaction("CreateCage", id, name).then((response) => {
         res.send({});
     }).catch((err) => {
@@ -72,7 +75,8 @@ router.post("/", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
    let id = req.params.id;
-   let contract = await meatchain.getContract();
+   console.log("Requesting deletion of cage with id " + id);
+   let contract = await meatchain.getFarmContract();
    contract.submitTransaction("DeleteCage", id).then((response) => {
        res.send({});
    }).catch((err) => {

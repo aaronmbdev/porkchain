@@ -9,10 +9,14 @@ export default class Utils {
         return "https://api.meatchain.cloud";
     }
 
-    static processResponseFromAPI(response) {
-        return {
-            success: response.status !== 500,
-            data: response.data
-        };
+    static getPorkCuts() {
+        return [
+            { value: 'leg', label: 'Leg' },
+            { value: 'loin', label: 'Loin' },
+            { value: 'belly', label: 'Belly' },
+            { value: 'blade', label: 'Blade' },
+            { value: 'hand', label: 'Hand' },
+            { value: 'trotters', label: 'Trotters' },
+        ];
     }
 }

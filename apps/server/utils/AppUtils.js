@@ -9,11 +9,29 @@ exports.prettyJSONString = (inputString) => {
     }
 }
 
-exports.getConnectionProfile = () => {
+exports.getFarmConnectionProfile = () => {
     if(process.env.NODE_ENV === "development") {
-        return "connection-profile-local.yaml";
+        return "farm-connection-profile-local.yaml";
     }
-    return "connection-profile.yaml";
+    return "farm-connection-profile.yaml";
+}
+
+exports.getFactoryConnectionProfile = () => {
+    if(process.env.NODE_ENV === "development") {
+        return "factory-connection-profile-local.yaml";
+    }
+    return "factory-connection-profile.yaml";
+}
+
+exports.getDiscovery = () => {
+    let localhost = false;
+    if(process.env.NODE_ENV === "development") {
+        localhost = true;
+    }
+    return {
+        enabled: true,
+        asLocalhost: localhost
+    };
 }
 
 exports.Logger = class {

@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
         res.status(400).send("location is required");
         return;
     }
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
     let uuid = generator.generateID();
     contract.submitTransaction('CreatePig',
         uuid,
@@ -38,10 +38,11 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
     let pageSize = req.query.pageSize || 5;
     let bookmark = req.query.bookmark || "";
-    contract.evaluateTransaction('ListPigs', pageSize, bookmark).then((response) => {
+    let slaughter = req.query.slaughter || false;
+    contract.evaluateTransaction('ListPigs', pageSize, bookmark, slaughter).then((response) => {
         let parsedResponse = JSON.parse(response.toString());
         res.setHeader('Content-Type', 'application/json');
         res.send(parsedResponse);
@@ -51,7 +52,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
     let id = req.params.id;
     contract.evaluateTransaction('ReadPig', id).then((response) => {
         let parsedResponse = JSON.parse(response.toString());
@@ -63,7 +64,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.get("/:id/records", async (req, res) => {
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
     let id = req.params.id;
     let pageSize = req.query.pageSize || 5;
     let bookmark = req.query.bookmark || "";
@@ -77,7 +78,7 @@ router.get("/:id/records", async (req, res) => {
 });
 
 router.post("/:id/kill", async (req, res) => {
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
     let id = req.params.id;
     let recordId = generateID();
     contract.submitTransaction('SlaughterPig', id, recordId).then((response) => {
@@ -88,7 +89,7 @@ router.post("/:id/kill", async (req, res) => {
 });
 
 router.post("/:id/healthcheck", async (req, res) => {
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
     let id = req.params.id;
     let recordId = generateID();
     let vetId = req.body.vetId;
@@ -106,7 +107,7 @@ router.post("/:id/healthcheck", async (req, res) => {
 });
 
 router.post("/:id/feed", async (req, res) => {
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
     let id = req.params.id;
     let recordId = generateID();
     let data = req.body.data;
@@ -129,7 +130,7 @@ router.put("/:id", async (req, res) => {
     let birthdate = req.body.birthdate || "";
     let breed = req.body.breed || "";
     let location = req.body.location || "";
-    let contract = await meatchain.getContract();
+    let contract = await meatchain.getFarmContract();
     contract.submitTransaction("UpdatePig",
         recordId,
         id,

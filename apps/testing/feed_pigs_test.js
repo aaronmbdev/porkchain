@@ -6,7 +6,7 @@ exports.feedPigsTest = async (cages, contract) => {
     console.log('****** Feeding some pigs ****** \n\n ');
 
     console.log("Trying to get all pigs available in cage " + cages[0]);
-    let evaluateResponse = await contract.evaluateTransaction("GetAllPigsInCage", cages[0]);
+    let evaluateResponse = await contract.evaluateTransaction("GetAllPigsInCage", cages[0], 10, "");
     if (evaluateResponse.toString() === "") {
         throw "Error, no pigs were found in cage " + cages[0];
     }
@@ -15,6 +15,7 @@ exports.feedPigsTest = async (cages, contract) => {
     let pigs = JSON.parse(evaluateResponse.toString());
     let vetId = "ABC-11234";
     let data = "All checks passed successfully";
+    pigs = pigs.records;
     for(const pig in pigs) {
         console.log("Feeding pig " + pigs[pig].pig_id);
         let registry = generateID();

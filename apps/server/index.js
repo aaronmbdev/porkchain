@@ -8,13 +8,13 @@ require('log-timestamp');
 
 
 (async () => {
-  await meatchain.createMeatchainConnection(utils.getConnectionProfile());
+  await meatchain.createMeatchainConnection(utils.getFarmConnectionProfile(), utils.getFactoryConnectionProfile());
 })();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const allowedOrigins = ['http://localhost:3000',
-  'https://farm.meatchain.cloud','https://factory.meatchain.cloud','https://market.meatchain.cloud'];
+  'https://farm.meatchain.cloud','https://factory.meatchain.cloud','https://market.meatchain.cloud', 'http://localhost:3001',];
 
 app.use(cors({
   origin: function(origin, callback){
@@ -37,5 +37,14 @@ app.use('/cage', cageRouter);
 
 const pigRouter = require('./routes/pig_management');
 app.use('/pig', pigRouter);
+
+const additiveRouter = require('./routes/additive_management');
+app.use('/additive', additiveRouter);
+
+const meatRouter = require('./routes/meat_management');
+app.use('/meat', meatRouter);
+
+const trayRouter = require('./routes/tray_management');
+app.use('/tray', trayRouter);
 
 app.listen(4000);

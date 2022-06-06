@@ -6,6 +6,11 @@ import React from "react";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Template from "./pages/template";
+import SauceOverview from "./pages/SauceOverview";
+import SeasoningOverview from "./pages/SeasoningOverview";
+import CutMeat from "./pages/CutMeat";
+import MeatOverview from "./pages/MeatOverview";
+import PackMeat from "./pages/PackMeat";
 
 
 export default class App extends React.Component {
@@ -19,6 +24,14 @@ export default class App extends React.Component {
                     <ToastContainer />
                     <Routes>
                         <Route path="/" element={<Template />} />
+                        <Route path="/sauces" element={<SauceOverview />} />
+                        <Route path="/seasoning" element={<SeasoningOverview />} />
+
+                        <Route path="/meat/cut" element={<CutMeat />} />
+                        <Route path={"/meat"} element={<MeatOverview />} />
+
+                        <Route path="/tray/create" element={<PackMeat />} />
+                        <Route path="/tray" element={<Template />} />
                     </Routes>
                     <Footer />
                 </div>

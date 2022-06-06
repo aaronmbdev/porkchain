@@ -5,63 +5,96 @@ const {Wallets, Gateway} = require("fabric-network");
 const fs = require("fs");
 const FabricCAServices = require("fabric-ca-client");
 const path = require("path");
+const Utils = require("../utils/AppUtils");
+
+const FarmMSP =  "FarmMSP";
+const FactoryMSP = "FactoryMSP";
+const FarmWalletPath = path.join(process.cwd(), 'farm_wallet');
+const FactoryWalletPath = path.join(process.cwd(), 'factory_wallet');
+const FarmUser = "farmUser";
+const FactoryUser = "factoryUser"
+const Channel = "meatchannel";
+const Chaincode = "pigManagement";
+
+class MeatchainValue {
+    constructor(path, msp, username, discovery) {
+        let seed = Math.random().toString(36).substr(2, 9);
+        this.walletPath = path;
+        this.msp = msp;
+        this.username = username + "_" + seed;
+        this.gateway = null;
+        this.connection_profile = null;
+        this.wallet = null;
+        this.contract = null;
+        this.discovery = discovery;
+    }
+}
 
 class MeatchainService {
-    _walletPath = path.join(process.cwd(), 'wallet');
-    _mspOrg1 = 'FarmMSP';
-    _Username = 'farmUser3';
-    _channelName = 'meatchannel';
-    _chaincodeName = 'pigManagement';
-    _gateway = null;
-    _connectionProfile = null;
-    _wallet = null;
-    _contractInstance = null;
-
-
-    constructor() {
+    constructor(discoveryConf) {
         console.log("Building meatchain service class");
+        this.farmValues = new MeatchainValue(FarmWalletPath, FarmMSP, FarmUser, discoveryConf);
+        this.factoryValues = new MeatchainValue(FactoryWalletPath, FactoryMSP, FactoryUser, discoveryConf);
     }
 
-    createMeatchainConnection = async(profile) => {
+    createMeatchainConnection = async(farmProfile, factoryProfile) => {
         console.log("Creating meatchain connection");
-        const wallet = await this._buildWallet(Wallets, this._walletPath);
-        let connectionProfile = yaml.load(fs.readFileSync(process.cwd() + "/" + profile, "utf-8"));
 
-        const ca = this._buildFarmCAClient(FabricCAServices, connectionProfile);
-        await this._enrollAdmin(ca, wallet, this._mspOrg1, "admin","adminpw");
-        await this._registerAndEnrollUser(ca, wallet, this._mspOrg1, this._Username, 'farm.department1', "admin");
+        console.log("Verifying or creating farm wallet...");
+        this.farmValues.wallet = await this._buildWallet(Wallets, this.farmValues.walletPath);
+        console.log("Verifying or creating factory wallet...");
+        this.factoryValues.wallet = await this._buildWallet(Wallets, this.factoryValues.walletPath);
 
-        this._gateway = new Gateway();
-        this._connectionProfile = connectionProfile;
-        this._wallet = wallet;
-        return this._gateway;
+        console.log("Reading Farm connection profile...")
+        this.farmValues.connection_profile = yaml.load(fs.readFileSync(process.cwd() + "/" + farmProfile, "utf-8"));
+
+        const ca = this._buildFarmCAClient(FabricCAServices, this.farmValues.connection_profile);
+        await this._enrollAdmin(ca, this.farmValues.wallet, this.farmValues.msp, "admin","adminpw");
+        await this._registerAndEnrollUser(ca, this.farmValues.wallet, this.farmValues.msp, this.farmValues.username, 'farm.department1', "admin");
+        this.farmValues.gateway = new Gateway();
+
+        console.log("Reading Factory connection profile...")
+        this.factoryValues.connection_profile = yaml.load(fs.readFileSync(process.cwd() + "/" + factoryProfile, "utf-8"));
+
+        const factoryCa = this._buildFactoryCAClient(FabricCAServices, this.factoryValues.connection_profile);
+        await this._enrollAdmin(factoryCa, this.factoryValues.wallet, this.factoryValues.msp, "admin","adminpw");
+        await this._registerAndEnrollUser(factoryCa, this.factoryValues.wallet, this.factoryValues.msp, this.factoryValues.username, 'factory.department1', "admin");
+        this.factoryValues.gateway = new Gateway();
+
+        console.log("Connection performed successfully");
+
     }
 
-    getContract = async () => {
-        if(this._contractInstance == null) {
-            console.log("Creating contract instance");
-            this._contractInstance = await this._produceAndSaveContract();
+    getFarmContract = async () => {
+        if(this.farmValues.contract == null) {
+            console.log("Creating contract instance for Farm");
+            this.farmValues.contract = await this._produceAndSaveContract(this.farmValues);
         }
-        return this._contractInstance;
+        return this.farmValues.contract;
     }
 
-    _produceAndSaveContract = async() => {
+    getFactoryContract = async() => {
+        if(this.factoryValues.contract == null) {
+            console.log("Creating contract instance for Factory");
+            this.factoryValues.contract = await this._produceAndSaveContract(this.factoryValues);
+        }
+        return this.factoryValues.contract;
+    }
+
+    _produceAndSaveContract = async(values) => {
         let connectionOptions =  {
-            identity: this._Username,
-            wallet: this._wallet,
-            discovery: {
-                enabled: true,
-                asLocalhost: true
-            }
+            identity: values.username,
+            wallet: values.wallet,
+            discovery: values.discovery,
         };
 
-        if(this._gateway != null) {
-            await this._gateway.connect(this._connectionProfile, connectionOptions);
-            const network = await this._gateway.getNetwork(this._channelName);
+        if(values.gateway != null) {
+            await values.gateway.connect(values.connection_profile, connectionOptions);
+            const network = await values.gateway.getNetwork(Channel);
             console.log("Contract found, success");
-            return network.getContract(this._chaincodeName);
+            return network.getContract(Chaincode);
         }
-        console.log("Could not obtain the contract, gateway is null")
+        console.log("Could not obtain the contract, gateway is null");
     }
 
 
@@ -84,6 +117,15 @@ class MeatchainService {
         const ca = new FabricCAServices(caInfo.url, { trustedRoots: caTLSCACerts, verify: false }, "ca-farm");
 
         console.log(`Built a CA Client named "ca-farm"`);
+        return ca;
+    };
+
+    _buildFactoryCAClient = (FabricCAServices, ccp) => {
+        const caInfo = ccp.certificateAuthorities['ca.Factory.meatchain.cloud'];
+        const caTLSCACerts = caInfo.tlsCACerts.pem;
+        const ca = new FabricCAServices(caInfo.url, { trustedRoots: caTLSCACerts, verify: false }, "ca-factory");
+
+        console.log(`Built a CA Client named "ca-factory"`);
         return ca;
     };
 
@@ -128,12 +170,12 @@ class MeatchainService {
 
             const provider = wallet.getProviderRegistry().getProvider(adminIdentity.type);
             const adminUser = await provider.getUserContext(adminIdentity, adminUserId);
-
             const secret = await caClient.register({
                 affiliation: affiliation,
                 enrollmentID: userId,
                 role: 'client'
             }, adminUser);
+
             const enrollment = await caClient.enroll({
                 enrollmentID: userId,
                 enrollmentSecret: secret
@@ -155,5 +197,5 @@ class MeatchainService {
 
 }
 
-const service = new MeatchainService();
+const service = new MeatchainService(Utils.getDiscovery());
 module.exports = service;
