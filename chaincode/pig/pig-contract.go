@@ -245,12 +245,20 @@ func (c *PigContract) CreatePig(
 	return &pig, ctx.GetStub().PutState(id, bytes)
 }
 
-func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, pageSize int32, bookmark string) (*PaginatedPigResult, error) {
+func (c *PigContract) ListPigs(ctx contractapi.TransactionContextInterface, pageSize int32, bookmark string, deadOnly bool) (*PaginatedPigResult, error) {
 	queryString := `{
 	   "selector": {
 		  "assetType": {"$eq": "pig"}
 	   }
 	}`
+	if deadOnly {
+		queryString = fmt.Sprintf(`{
+		   "selector": {
+			  "assetType": {"$eq": "pig"},
+               "status": {"$eq": "%s"}
+		   }
+		}`, PigStatus_slaughtered)
+	}
 	return _queryStringPaginatedResponsePig(ctx, queryString, pageSize, bookmark)
 }
 

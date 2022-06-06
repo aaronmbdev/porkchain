@@ -43,15 +43,10 @@ type Meat struct {
 }
 
 type Tray struct {
-	AssetType string             `json:"assetType"`
-	TrayID    string             `json:"tray_id"`
-	Meats     []MeatQuantityPair `json:"meats"`
-	Additives []string           `json:"additives"`
-}
-
-type MeatQuantityPair struct {
-	MeatID   string `json:"meat_id"`
-	Quantity int    `json:"quantity"`
+	AssetType string   `json:"assetType"`
+	TrayID    string   `json:"tray_id"`
+	Meats     []string `json:"meats"`
+	Additives []string `json:"additives"`
 }
 
 type PaginatedCageResult struct {
