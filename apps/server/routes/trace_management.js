@@ -4,14 +4,15 @@ const meatchain = require('../service/MeatchainService');
 
 router.post("/additive", async (req, res) => {
     let ids = req.body.additivesId;
+    let mode = req.body.mode || "or";
     if(ids === undefined) {
         res.status(400).send("additivesId is required");
         return;
     }
     let json = JSON.stringify(ids);
-    console.log("Requesting Trays with additives: " + json);
+    console.log("Requesting Trays with additives ("+mode+"): " + json);
     let contract = await meatchain.getFactoryContract();
-    contract.evaluateTransaction('QueryTraysByAdditive', json).then((response) => {
+    contract.evaluateTransaction('QueryTraysByAdditive', json, mode).then((response) => {
         let parsedResponse = JSON.parse(response.toString());
         res.setHeader('Content-Type', 'application/json');
         res.send(parsedResponse);

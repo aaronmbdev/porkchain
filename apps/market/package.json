@@ -1,0 +1,59 @@
+{
+  "name": "farm",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@mdi/js": "^6.7.96",
+    "@mdi/react": "^1.6.0",
+    "ag-grid-community": "^27.3.0",
+    "ag-grid-react": "^27.3.0",
+    "axios": "^0.27.2",
+    "react": "^18.1.0",
+    "react-data-table-component": "6.11.8",
+    "react-data-table-component-extensions": "^1.6.0",
+    "react-dom": "^18.1.0",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-is-mounted-hook": "^1.1.2",
+    "react-qr-code": "^2.0.7",
+    "react-router-dom": "^6.2.2",
+    "react-scripts": "5.0.1",
+    "react-select": "^5.3.2",
+    "react-select-async-paginate": "^0.6.1",
+    "react-to-print": "^2.14.7",
+    "react-toastify": "^9.0.1",
+    "styled-components": "^5.3.5",
+    "sweetalert2": "^11.4.17",
+    "uuid": "^8.3.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false,
+    "net": false,
+    "tls": false
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
