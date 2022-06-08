@@ -66,8 +66,6 @@ export default class TrayOverview extends React.Component {
         });
 
         row.additives.forEach((add,index) => {
-            let last = row.additives.length - 1;
-            let isLast = index === last;
             meatchain.readAdditive(add).then(res => {
                 let data = res.data;
                 if(data.additiveType === "seasoning") {
@@ -84,7 +82,7 @@ export default class TrayOverview extends React.Component {
     }
     render() {
         this.getDataForTable();
-        let {id, meat, sauces, seasoning, loadedFor} = this.state;
+        let {id, meat, sauces, seasoning} = this.state;
         const columns = [
             {
                 name: "ID",
