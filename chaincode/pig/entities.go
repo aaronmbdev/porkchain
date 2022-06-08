@@ -78,3 +78,15 @@ type PaginatedMeatResult struct {
 	FetchedRecordsCount int32   `json:"fetchedRecordsCount"`
 	Bookmark            string  `json:"bookmark"`
 }
+
+type TraceRecord struct {
+	Additives []*Additive `json:"additives"`
+	Meats     []*Meat     `json:"meats"`
+	Pigs      []*Pig      `json:"pigs"`
+}
+
+type PaginatedTrayResult struct {
+	Records             []*Tray `json:"records,omitempty" metadata:"records,optional" `
+	FetchedRecordsCount int32   `json:"fetchedRecordsCount"`
+	Bookmark            string  `json:"bookmark"`
+}

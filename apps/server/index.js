@@ -47,4 +47,7 @@ app.use('/meat', meatRouter);
 const trayRouter = require('./routes/tray_management');
 app.use('/tray', trayRouter);
 
+const traceRouter = require('./routes/trace_management');
+app.use('/trace', traceRouter);
+
 app.listen(4000);

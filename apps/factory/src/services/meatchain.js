@@ -56,4 +56,14 @@ export default class MeatchainService {
         });
     }
 
+    async getTrays() {
+        let pageSize = 1000;
+        let bookmark = "";
+        return axios.get(`${this._url}/tray?pageSize=${pageSize}&bookmark=${bookmark}`);
+    }
+
+    async readMeat(id) {
+        return axios.get(`${this._url}/meat/${id}`);
+    }
+
 }

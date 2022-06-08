@@ -11,6 +11,7 @@ import SeasoningOverview from "./pages/SeasoningOverview";
 import CutMeat from "./pages/CutMeat";
 import MeatOverview from "./pages/MeatOverview";
 import PackMeat from "./pages/PackMeat";
+import TrayOverview from "./pages/TrayOverview";
 
 
 export default class App extends React.Component {
@@ -31,7 +32,7 @@ export default class App extends React.Component {
                         <Route path={"/meat"} element={<MeatOverview />} />
 
                         <Route path="/tray/create" element={<PackMeat />} />
-                        <Route path="/tray" element={<Template />} />
+                        <Route path="/tray" element={<TrayOverview />} />
                     </Routes>
                     <Footer />
                 </div>

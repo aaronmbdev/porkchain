@@ -40,6 +40,10 @@ export default class MeatOverview extends React.Component {
                     data: info.records,
                     pending: false
                 });
+            } else {
+                this.setState({
+                    pending: false
+                })
             }
         }).catch(err => {
             Toast.error(err.response.data);

@@ -86,7 +86,7 @@ export default class PackMeat extends React.Component {
                                             </div>
                                             <div className="col-lg-12 form-group">
                                                 <label htmlFor="data">Meats selection</label>
-                                                <MeatSelector  parentCallback={(e) => this.meatSelector(e)}/>
+                                                <MeatSelector  parentCallback={(e) => this.meatSelector(e)} minAmount={1}/>
                                             </div>
                                             <div className="col-lg-12 form-group">
                                                 <button className="btn btn-primary" onClick={() => this.createTray()} disabled={disabled}>{text}</button>

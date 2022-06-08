@@ -75,12 +75,6 @@ export default class Menu extends React.Component {
                                     <span>Search by Meat</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href={"#"} className=" waves-effect">
-                                    <i className="mdi mdi-card-search-outline"></i>
-                                    <span>Search by Pig</span>
-                                </a>
-                            </li>
 
                         </ul>
 

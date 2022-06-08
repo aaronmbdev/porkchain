@@ -19,6 +19,19 @@ router.get("/", async (req, res) => {
     });
 });
 
+router.get("/:id", async (req, res) => {
+   let id = req.params.id;
+    console.log("Requesting meat with id: " + id);
+    let contract = await meatchain.getFactoryContract();
+    contract.evaluateTransaction('ReadMeat', id).then((response) => {
+        let parsedResponse = JSON.parse(response.toString());
+        res.setHeader('Content-Type', 'application/json');
+        res.send(parsedResponse);
+    }).catch(err => {
+        res.status(500).send(err.toString());
+    })
+});
+
 router.post("/", async (req, res) => {
     console.log("Creating a new meat cut");
     if(req.body.pigId === undefined) {

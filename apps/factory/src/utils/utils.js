@@ -11,12 +11,13 @@ export default class Utils {
 
     static getPorkCuts() {
         return [
-            { value: 'leg', label: 'Leg' },
-            { value: 'loin', label: 'Loin' },
-            { value: 'belly', label: 'Belly' },
-            { value: 'blade', label: 'Blade' },
-            { value: 'hand', label: 'Hand' },
-            { value: 'trotters', label: 'Trotters' },
+            { value: 'Leg', label: 'Leg' },
+            { value: 'Loin', label: 'Loin' },
+            { value: 'Belly', label: 'Belly' },
+            { value: 'Blade', label: 'Blade' },
+            { value: 'Hand', label: 'Hand' },
+            { value: 'Head', label: 'Head' },
+            { value: 'Trotters', label: 'Trotters' },
         ];
     }
 }
