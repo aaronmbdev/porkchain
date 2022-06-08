@@ -66,4 +66,17 @@ export default class MeatchainService {
         return axios.get(`${this._url}/meat/${id}`);
     }
 
+    async readTraysByAdditive(additives, mode) {
+        return axios.post(`${this._url}/trace/additive`, {
+            additivesId: additives,
+            mode: mode
+        });
+    }
+
+    async readTraysByMeat(meat) {
+        return axios.post(`${this._url}/trace/meat`, {
+            meatsId: meat
+        })
+    }
+
 }

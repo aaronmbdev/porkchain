@@ -12,6 +12,9 @@ import CutMeat from "./pages/CutMeat";
 import MeatOverview from "./pages/MeatOverview";
 import PackMeat from "./pages/PackMeat";
 import TrayOverview from "./pages/TrayOverview";
+import SearchByAdditive from "./pages/SearchByAdditive";
+import SearchByMeat from "./pages/SearchByMeat";
+import SearchByTray from "./pages/SearchByTray";
 
 
 export default class App extends React.Component {
@@ -33,6 +36,10 @@ export default class App extends React.Component {
 
                         <Route path="/tray/create" element={<PackMeat />} />
                         <Route path="/tray" element={<TrayOverview />} />
+
+                        <Route path="/trace/additive" element={<SearchByAdditive />} />
+                        <Route path="/trace/meat" element={<SearchByMeat />} />
+                        <Route path="/trace/tray" element={<SearchByTray />} />
                     </Routes>
                     <Footer />
                 </div>

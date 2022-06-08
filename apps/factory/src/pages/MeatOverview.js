@@ -1,7 +1,9 @@
 import React from "react";
 import Utils from "../utils/utils";
 import Select from "react-select";
-import DataTable from "react-data-table-component";
+import DataTable from 'react-data-table-component';
+import DataTableExtensions from 'react-data-table-component-extensions';
+import 'react-data-table-component-extensions/dist/index.css';
 import MeatchainService from "../services/meatchain";
 import Toast from "../utils/toast";
 
@@ -60,30 +62,34 @@ export default class MeatOverview extends React.Component {
         const columns = [
             {
                 name: "ID",
-                selector: row => row.meat_id,
+                selector: "meat_id",
                 sortable: true,
             },
             {
                 name: "Cut",
-                selector: row => row.cut,
+                selector: "cut",
                 sortable: true,
             },
             {
                 name: "Pieces",
-                selector: row => row.pieces,
+                selector: "pieces",
                 sortable: true,
             },
             {
                 name:"Production date",
-                selector: row => row.production,
+                selector: "production",
                 sortable: true,
             },
             {
                 name:"Pig",
-                selector: row => row.pig_id,
+                selector: "pig_id",
                 sortable: true,
             }
         ];
+        const data = this.state.data;
+        const tableData = {
+            columns, data
+        }
         return (
             <div className="page-content">
                 <div className="container-fluid">
@@ -129,13 +135,19 @@ export default class MeatOverview extends React.Component {
                                     <p></p>
                                     <div className="row">
                                         <div className="col-lg-12">
-                                            <DataTable
-                                                title={"Meat available"}
-                                                columns={columns}
-                                                data={this.state.data}
-                                                pagination={true}
-                                                progressPending={this.state.pending}
-                                            />
+                                            <DataTableExtensions
+                                                {...tableData}
+                                            >
+                                                <DataTable
+                                                    title={"Meat available"}
+                                                    noHeader={true}
+                                                    defaultSortAsc={false}
+                                                    defaultSortFieldId="ID"
+                                                    highlightOnHover={true}
+                                                    pagination={true}
+                                                    progressPending={this.state.pending}
+                                                />
+                                            </DataTableExtensions>
                                         </div>
                                     </div>
                                 </div>

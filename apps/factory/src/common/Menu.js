@@ -58,19 +58,19 @@ export default class Menu extends React.Component {
                             </li>
                             <li className="menu-title">Reverse Tracing</li>
                             <li>
-                                <a href={"#"} className=" waves-effect">
+                                <a href={"/trace/additive"} className=" waves-effect">
                                     <i className="mdi mdi-card-search-outline"></i>
                                     <span>Search by Additive</span>
                                 </a>
                             </li>
                             <li>
-                                <a href={"#"} className=" waves-effect">
+                                <a href={"/trace/tray"} className=" waves-effect">
                                     <i className="mdi mdi-card-search-outline"></i>
                                     <span>Search by Tray</span>
                                 </a>
                             </li>
                             <li>
-                                <a href={"#"} className=" waves-effect">
+                                <a href={"/trace/meat"} className=" waves-effect">
                                     <i className="mdi mdi-card-search-outline"></i>
                                     <span>Search by Meat</span>
                                 </a>
