@@ -56,9 +56,9 @@ export default class MeatchainService {
         });
     }
 
-    async getTrays() {
-        let pageSize = 1000;
-        let bookmark = "";
+    async getTrays(pageSize, bookmark) {
+        pageSize = pageSize || 1000;
+        bookmark = bookmark || "";
         return axios.get(`${this._url}/tray?pageSize=${pageSize}&bookmark=${bookmark}`);
     }
 
@@ -77,6 +77,14 @@ export default class MeatchainService {
         return axios.post(`${this._url}/trace/meat`, {
             meatsId: meat
         })
+    }
+
+    async readTrayTraceability(trayId) {
+        return axios.get(`${this._url}/trace/tray/${trayId}`);
+    }
+
+    async readPigHistory(id, pageSize, bookmark) {
+        return axios.get(`${this._url}/pig/${id}/records/?pageSize=${pageSize}&bookmark=${bookmark}`);
     }
 
 }

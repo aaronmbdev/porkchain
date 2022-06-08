@@ -22,7 +22,7 @@ export default class TrayOverview extends React.Component {
     getDataForTable() {
         if(this.state.updateRequest) {
             let meatchain = new MeatchainService();
-            meatchain.getTrays().then(response => {
+            meatchain.getTrays(null, null).then(response => {
                 let info = response.data;
                 if(info.fetchedRecordsCount !== 0) {
                     this.setState({
