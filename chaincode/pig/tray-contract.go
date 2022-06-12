@@ -94,6 +94,7 @@ func (t *PigContract) QueryTraysByMeat(ctx contractapi.TransactionContextInterfa
 		  }
 	   }
 	}`, "tray", meatId)
+
 	result, err := t._TraysFromQuery(ctx, queryString, 1000, "")
 	if err != nil {
 		return nil, err
@@ -101,7 +102,7 @@ func (t *PigContract) QueryTraysByMeat(ctx contractapi.TransactionContextInterfa
 	return result, nil
 }
 
-func (t *PigContract) QueryTraysByAdditive(ctx contractapi.TransactionContextInterface, additiveId string) (*PaginatedTrayResult, error) {
+func (t *PigContract) QueryTraysByAdditive(ctx contractapi.TransactionContextInterface, additiveId string, mode string) (*PaginatedTrayResult, error) {
 	var additives []string
 	err := json.Unmarshal([]byte(additiveId), &additives)
 	if err != nil {
@@ -118,11 +119,23 @@ func (t *PigContract) QueryTraysByAdditive(ctx contractapi.TransactionContextInt
 		  },
 		  "additives": {
 			 "$elemMatch": {
-				"$or": %s
+				"$%s": %s
 			 }
 		  }
 	   }
+	}`, "tray", mode, additiveId)
+	if mode == "all" {
+		queryString = fmt.Sprintf(`{
+	   "selector": {
+		  "assetType": {
+			 "$eq": "%s"
+		  },
+		  "additives": {
+			 "$all": %s
+		  }
+	   }
 	}`, "tray", additiveId)
+	}
 	result, err := t._TraysFromQuery(ctx, queryString, 1000, "")
 	if err != nil {
 		return nil, err
