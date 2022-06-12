@@ -28,7 +28,7 @@ export default class BornPigForm extends React.Component {
       let meatchain = new MeatchainService();
       let newPigs = [];
       for(let i = 1; i <= piglets; i++) {
-          console.log("Creating pig " + i);
+          Toast.info("Creating pig " + i);
           const response = await meatchain.createPig(parentId, birthdate, breed, location);
           newPigs.push(response.data);
       }

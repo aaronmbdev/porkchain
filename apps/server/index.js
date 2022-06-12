@@ -14,7 +14,7 @@ require('log-timestamp');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const allowedOrigins = ['http://localhost:3000',
-  'https://farm.meatchain.cloud','https://factory.meatchain.cloud','https://market.meatchain.cloud', 'http://localhost:3001',];
+  'https://farm.meatchain.cloud','https://factory.meatchain.cloud','https://market.meatchain.cloud', 'http://localhost:3001','http://localhost:3002'];
 
 app.use(cors({
   origin: function(origin, callback){

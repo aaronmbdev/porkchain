@@ -84,9 +84,7 @@ export default class FeedingPage extends React.Component {
             let i = 0;
             records.forEach(async (element) => {
                i++;
-               await meatchain.feedPig(element.pig_id, foodData).then(res => {
-                   console.log(res);
-               });
+               await meatchain.feedPig(element.pig_id, foodData);
                if(i === pigAmount) {
                    this.setState({
                        queryStatus: "Feeding process finished",

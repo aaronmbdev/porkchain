@@ -14,7 +14,7 @@ const FactoryWalletPath = path.join(process.cwd(), 'factory_wallet');
 const FarmUser = "farmUser";
 const FactoryUser = "factoryUser"
 const Channel = "meatchannel";
-const Chaincode = "pigManagement";
+const Chaincode = "meatchain";
 
 class MeatchainValue {
     constructor(path, msp, username, discovery) {
