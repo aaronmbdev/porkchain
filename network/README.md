@@ -47,6 +47,8 @@ To deploy the smart contract of the pig management contract we use the following
 
 Where NAME is the name of the chaincode to be deployed. PATH is where the code is located (only the folder) and LANG is the language that the chaincode is written. It could be either Go, Java or Javascript.
 
+We use the ccv and ccs parameter to setup the chaincode version, the first deployment should be v1.0.0 and secuence 1. To update the code we need to deploy a higher version with the next sequence number.
+
 The `cci` attribute is optional and is used to launch an init function. It may be useful to launch the contract and create some initial data. In the example, the script will be calling the function `initLedger` of the contract as soon as it is deployed.
 
 ## Using the Peer commands
@@ -69,4 +71,35 @@ export $(./setOrgEnv.sh ORG | xargs)
 
 Change ORG by either Farm or Factory.
 
+## Debug and logs
 
+We can check the logs of each local peer by using docker commands.
+
+```bash
+docker ps
+```
+We can use docker ps to get the active containers and their id. With the id we can get the logs by running.
+
+```bash
+docker logs XXXX [-f]
+```
+Replace XXX with the id seen with docker ps. The -f argument is very useful to follow the logs in realtime.
+
+## Hyperledger Explorer
+
+Hyperledger explorer is a tool made by the Linux Foundation that allows exploring a given hyperledger network and see the different transactions that are being committed to the ledger.
+
+To run a local instance review the contents in the file connection-profile/test-network.json to match the existing files over the organization folder.
+Then run the following command in the network file
+```bash
+docker-compose up -d
+```
+
+This will create a docker container running the explorer. Then we will be able to browse the explorer by accessing:
+http://localhost:8080
+If you can't access use the steps defined above to check the logs and see what's wrong.
+
+The credentials are:
+```bash
+exploreradmin:exploreradminpw
+```
