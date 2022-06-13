@@ -1,4 +1,4 @@
-## Apps and Meatchain server
+# Apps and Meatchain server
 
 This section contains the Javascript apps that interact with the blockchain network.
 Folder structure explained below.

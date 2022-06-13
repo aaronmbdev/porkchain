@@ -1,24 +1,23 @@
-# Getting Started with Create React App
+# Farm client app
 
-This is the client for the Farm application. It is a react application that allows interaction with the Meatchain network.
+This is the client app for the Farm.
 
 ## Available Scripts
 
-In the project directory, you can run:
+To get started you need to first install the required dependencies. This is only required the first time.
 
-### `npm start`
+```bash
+npm install
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Then we can start a development instance to start developing by typing:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+npm start
+```
 
+Once we're ready to deploy, we will need an optimized production build. We can run the following command.
 
-### `npm build`
-
-This will create a production build of the app. 
-
-### CI / CD
-
-This app is automatically deployed using Github actions. Each commit to main triggers the launch script.
+```bash
+npm run build
+```

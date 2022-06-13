@@ -1,25 +1,23 @@
-# Getting Started with Create React App
+# Supermarket client app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the supermarket app that lets a given client to check the traceability of a meat tray.
 
 ## Available Scripts
 
-In the project directory, you can run:
+To get started you need to first install the required dependencies. This is only required the first time.
 
-### `npm start`
+```bash
+npm install
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Then we can start a development instance to start developing by typing:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+npm start
+```
 
+Once we're ready to deploy, we will need an optimized production build. We can run the following command.
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
+```bash
+npm run build
+```

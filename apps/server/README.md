@@ -1,4 +1,4 @@
-## Meatchain Rest API
+# Meatchain Rest API
 
 This is the API that receives requests from the three client apps. It is basically packed into a docker image and deployed automatically using a autoscaled cloud service from Google Cloud to avoid bottlenecks.
 You can check the container definition at the Dockerfile.

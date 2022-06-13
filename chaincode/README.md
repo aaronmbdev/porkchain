@@ -1,4 +1,4 @@
-## Chaincode
+# Chaincode
 
 [![ Tests for Pig Chaincode](https://github.com/aaronmbdev/porkchain/actions/workflows/go.yml/badge.svg)](https://github.com/aaronmbdev/porkchain/actions/workflows/go.yml)
 
