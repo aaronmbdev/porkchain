@@ -43,6 +43,14 @@ class Tray extends React.Component {
                         <div className="col-lg-5">
                             <div className="card">
                                 <div className="card-body p-4">
+                                    <div className="row p-2">
+                                        <div className="col-md-3">
+                                            <button
+                                                className="btn btn-primary btn-block waves-effect waves-light"
+                                                type="button" onClick={() => this.goBack()}>Back
+                                            </button>
+                                        </div>
+                                    </div>
                                     <div className="p-2">
                                         <h5 className="mb-5 text-center">Loading information...</h5>
                                     </div>

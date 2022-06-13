@@ -4,7 +4,7 @@ import MeatchainService from "../services/meatchain";
 import Toast from "../utils/toast";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
-import InfiniteScroll from "react-infinite-scroll-component";
+import PigHistory from "../elements/pigHistory";
 
 export default class SearchByTray extends React.Component{
     constructor(props) {
@@ -27,7 +27,6 @@ export default class SearchByTray extends React.Component{
         })
     }
     doFilter() {
-        this.resetHistory();
         this.setState({
             isQuerying: true
         });
@@ -38,7 +37,12 @@ export default class SearchByTray extends React.Component{
                 additives: response.data.additives,
                 meats: response.data.meats,
                 pigs: response.data.pigs,
-            })
+            });
+            if(response.data.pigs.length !== 0) {
+                this.setState({
+                    selectedPig: response.data.pigs[0].pig_id
+                });
+            }
         }).catch((error) => {
             Toast.error(error.response.data);
         }).finally(() => {
@@ -47,31 +51,13 @@ export default class SearchByTray extends React.Component{
             });
         });
     }
-    resetHistory() {
-        this.setState({
-            history: [],
-            hasMore: true,
-            bookmark: ""
-        })
-    }
+
     seeHistory(e) {
-        this.resetHistory();
         this.setState({
             selectedPig: e
-        })
-        this.fetchMoreRecords();
+        });
     }
-    renderRecordType(type) {
-        if(type === "update") {
-            return <span className="badge badge-info">Update record</span>;
-        }
-        if(type === "health"){
-            return <span className="badge badge-info">Health review</span>;
-        }
-        if(type === "food") {
-            return <span className="badge badge-info">Feeding record</span>;
-        }
-    }
+
     additivesData() {
         const columns = [
             {
@@ -165,35 +151,6 @@ export default class SearchByTray extends React.Component{
         const data = this.state.pigs;
         return {
             columns,data
-        }
-    }
-
-    fetchMoreRecords = () => {
-        let {selectedPig, history, bookmark} = this.state;
-        if(selectedPig != null) {
-            let pageSize = 5;
-            let meatchain = new MeatchainService();
-            meatchain.readPigHistory(selectedPig, pageSize, bookmark).then(processed => {
-                if(processed.data.fetchedRecordsCount !== 0 && processed.data.fetchedRecordsCount !== pageSize) {
-                    this.setState({
-                        hasMore: false,
-                        history: history.concat(processed.data.records),
-                    });
-                } else if(processed.data.fetchedRecordsCount === 0) {
-                    this.setState({
-                        hasMore: false,
-                        history: []
-                    });
-                } else {
-                    this.setState({
-                        hasMore: true,
-                        history: history.concat(processed.data.records),
-                        bookmark: processed.data.bookmark
-                    });
-                }
-            }).catch(err => {
-                Toast.error(err.toString());
-            });
         }
     }
     render() {
@@ -303,25 +260,7 @@ export default class SearchByTray extends React.Component{
                                 <div className="card-body">
                                     <h4 className="card-title">History</h4>
                                     <ul className="verti-timeline list-unstyled">
-                                        <InfiniteScroll
-                                            next={this.fetchMoreRecords}
-                                            hasMore={this.state.hasMore}
-                                            loader={<h4>Loading...</h4>}
-                                            dataLength={this.state.history.length}
-                                        >
-                                            {this.state.history.map((item, index) => {
-                                                let recordType = this.renderRecordType(item.recordType);
-                                                return (
-                                                    <li className="event-list" key={index}>
-                                                        <div>
-                                                            <p className="text-primary">{item.date}</p>
-                                                            <h5>{recordType}</h5>
-                                                            <p className="text-muted">{item.data}</p>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            })}
-                                        </InfiniteScroll>
+                                        <PigHistory id={this.state.selectedPig}/>
                                     </ul>
                                 </div>
                             </div>

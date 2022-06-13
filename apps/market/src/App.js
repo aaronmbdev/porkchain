@@ -8,7 +8,7 @@ import Tray from "./pages/Tray";
 export default class App extends React.Component {
     render() {
         return (
-            <div>
+            <div id="app">
                 <ToastContainer />
                 <Routes>
                     <Route path="/" element={<Home />} />

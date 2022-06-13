@@ -35,7 +35,7 @@ export default class InformationTabs extends React.Component {
                         </a>
                     </div>
                 </div>
-                <div className="col-sm-9">
+                <div className="col-sm-9" style={{paddingLeft: "20px"}}>
                     <div className="tab-content mt-4 mt-sm-0">
                         <div className="tab-pane fade active show" id="v-pills-left-home" role="tabpanel"
                              aria-labelledby="v-pills-left-home-tab">

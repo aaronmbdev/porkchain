@@ -29,7 +29,7 @@
 		"FarmMSP": {
 			"mspid": "FarmMSP",
 			"adminPrivateKey": {
-				"path": "/tmp/crypto/peerOrganizations/farm.meatchain.cloud/users/User1@farm.meatchain.cloud/msp/keystore/3d082f57cb7552db1918e161ffc4d00565a9a6a1b726dffb49a31d72a2600627_sk"
+				"path": "/tmp/crypto/peerOrganizations/farm.meatchain.cloud/users/User1@farm.meatchain.cloud/msp/keystore/de670e63f17682c6d9d8f55651957cf730884705ca179bae80f554378b8112e6_sk"
 			},
 			"peers": ["peer0.farm.meatchain.cloud"],
 			"signedCert": {

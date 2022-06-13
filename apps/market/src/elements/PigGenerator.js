@@ -1,4 +1,5 @@
 import React from "react";
+import PigTraceModal from "./PigTraceModal";
 
 export default class PigGenerator extends React.Component {
 render() {
@@ -22,10 +23,7 @@ render() {
                                 <td>{pig.breed}</td>
                                 <td>{pig.birthdate}</td>
                                 <td>
-                                    <button
-                                        className="btn btn-primary btn-sm waves-effect waves-light"
-                                        type="button" >See records
-                                    </button>
+                                    <PigTraceModal id={pig.pig_id} />
                                 </td>
                             </tr>
                         )})
